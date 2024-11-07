@@ -26,27 +26,33 @@ module frame_buffer #(
 
     logic [THETA_RES-1:0] old_theta;
 
+    // intermediate variables used to address off-by-one issue
+    logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
+    logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
+
     fibonacci_col_calc fcc (
         .theta(theta),
         .col_indices(col_indices) // OUTPUT of fcc
     );
 
     always_comb begin
+        intermediate_col_num1 = col_index_intermediate;
+        intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
         col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
     end
 
     cube_frame cf (
         .theta(theta),
-        .column_index1(col_num1),
-        .column_index2(col_num2),
+        .column_index1(intermediate_col_num1),
+        .column_index2(intermediate_col_num2),
         .columns(cube_cols),
     );
 
     boids_lookup bf (
         .theta(theta),
-        .column_index1(col_num1),
-        .column_index2(col_num2),
+        .column_index1(intermediate_col_num1),
+        .column_index2(intermediate_col_num2),
         .columns(boids_cols),
     );
 
