@@ -24,6 +24,8 @@ module frame_buffer #(
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
+    logic [THETA_RES-1:0] old_theta;
+
     fibonacci_col_calc fcc (
         .theta(theta),
         .col_indices(col_indices) // OUTPUT of fcc
@@ -49,7 +51,7 @@ module frame_buffer #(
     );
 
     always_ff @(posedge clk_in) begin
-        if (rst_in) begin
+        if (rst_in || old_theta & ~theta) begin // reset or theta has changed
             col_index <= 0;
             col_index_track <= 0;
         end else begin
@@ -62,6 +64,7 @@ module frame_buffer #(
                 col_index <= col_index_intermediate;
             }
             col_index_intermediate <= col_index_intermediate + 1;
+            old_theta <= theta;
         end
     end
 endmodule
