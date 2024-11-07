@@ -9,9 +9,9 @@ module frame_buffer #(
     input wire mode,
     input wire clk_in,
     input wire [7:0] theta, // suppose 8 bit resolution for theta
-    output logic [1:0][NUM_ROWS-1:0] column,
-    output logic [SCAN_RATE-1:0] col_num1,
-    output logic [SCAN_RATE-1:0] col_num2,
+    output logic [1:0][NUM_ROWS-1:0] columns,
+    output logic [$clog2(SCAN_RATE)-1:0] col_num1,
+    output logic [$clog2(SCAN_RATE)-1:0] col_num2,
     output logic ready,
 );
     logic [SCAN_RATE-1:0] col_index; // goes from 0 - 31
@@ -19,10 +19,8 @@ module frame_buffer #(
     logic [NUM_COL-1:0] col_indices; // 1 for if that column is represented at this index, 0 if column isn't represented
                                     // used for scanline optimization
  
-    logic [SCAN_RATE-1:0] cube_col1;
-    logic [SCAN_RATE-1:0] cube_col2;
-    logic [SCAN_RATE-1:0] boids_col1;
-    logic [SCAN_RATE-1:0] boids_col2;
+    logic [1:0][NUM_ROWS-1:0] cube_cols;
+    logic [1:0][NUM_ROWS-1:0] boids_cols;
 
     fibonacci_col_calc fcc (
         .theta(theta),
@@ -41,28 +39,25 @@ module frame_buffer #(
 
     cube_frame cf (
         .theta(theta),
-        .column1(cube_col1),
-        .column2(cube_col2),
+        .column_index1(col_num1),
+        .column_index2(col_num2),
+        .columns(cube_cols),
     );
 
     boids_lookup bf (
         .theta(theta),
-        .column_index1(col_index),
-        .column_index2(col_index+SCAN_RATE),
-        .column1(boids_col1),
-        .column2(boids_col2)
-
+        .column_index1(col_num1),
+        .column_index2(col_num2),
+        .columns(boids_cols),
     );
     always_ff @(posedge clk_in) begin
         if (rst_in) begin
             col_index <= 0;
         end else begin
             if (mode) begin // cube mode
-                col_num1 <= cube_col1;
-                col_num2 <= cube_col2;
+                columns <= cube_cols;
             end else begin // boids mode
-                col_num1 <= boids_col1;
-                col_num2 <= boids_col2;
+                columns <= boids_cols;
             end
         end
     end
