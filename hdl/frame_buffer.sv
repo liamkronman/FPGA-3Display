@@ -55,13 +55,13 @@ module frame_buffer #(
             col_index <= 0;
             col_index_track <= 0;
         end else begin
-            if (mode) begin // cube mode
-                columns <= cube_cols;
-            end else begin // boids mode
-                columns <= boids_cols;
-            end
             if (col_indices[col_index_intermediate]) {
                 col_index <= col_index_intermediate;
+                if (mode) begin // cube mode
+                    columns <= cube_cols;
+                end else begin // boids mode
+                    columns <= boids_cols;
+                end
             }
             col_index_intermediate <= col_index_intermediate + 1;
             old_theta <= theta;
