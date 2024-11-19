@@ -1,16 +1,17 @@
-module frame_buffer #(
+module frame_track #(
     parameter ROTATIONAL_RES=180,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
-    parameter THETA_RES=8
+    parameter THETA_RES=8,
+    parameter RGB_RES=9
 )
 (
     input wire rst_in,
     input wire mode,
     input wire clk_in,
     input wire [THETA_RES-1:0] theta, // suppose 8 bit resolution for theta
-    output logic [1:0][$clog2(NUM_ROWS)-1:0] columns,
+    output logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
     output logic [$clog2(SCAN_RATE)-1:0] col_num2,
 );
@@ -19,8 +20,8 @@ module frame_buffer #(
     logic [$clog2(NUM_COL)-1:0] col_indices; // 1 for if that column is represented at this index, 0 if column isn't represented
                                     // used for scanline optimization
  
-    logic [1:0][$clog2(NUM_ROWS)-1:0] cube_cols;
-    logic [1:0][$clog2(NUM_ROWS)-1:0] boids_cols;
+    logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] cube_cols;
+    logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] boids_cols;
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
