@@ -13,8 +13,8 @@ TABLE_COMMANDS = ['./scripts/fill_tables.py']
 
 def main():
 
-    # creates the /log directory
-    subprocess.run('mkdir -p log', shell=True)
+    # creates the /log and /obj directories
+    subprocess.run('mkdir -p log obj', shell=True)
 
     if HAS_VIVADO:
         TABLE_COMMANDS.extend(VIVADO_COMPILE)
