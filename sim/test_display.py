@@ -41,18 +41,32 @@ class Display:
         plt.show()
 
 
-def main():
+def test_sphere():
     num_points = 1000
-    x = np.random.randint(0, 64, num_points)
-    y = np.random.randint(0, 64, num_points)
+    r = np.random.randint(0, 32, num_points)
+    theta = np.random.randint(0, 64, num_points)
     z = np.random.randint(0, 64, num_points)
 
     display = Display()
 
-    display.plot_cartesian(x, y, z)
+    display.plot_cylindrical(r, theta, z)
 
     display.show()
 
+
+def main():
+    # num_points = 1000
+    # x = np.random.randint(0, 64, num_points)
+    # y = np.random.randint(0, 64, num_points)
+    # z = np.random.randint(0, 64, num_points)
+
+    # display = Display()
+
+    # display.plot_cartesian(x, y, z)
+
+    # display.show()
+
+    test_sphere()
 
 if __name__ == "__main__":
     main()
