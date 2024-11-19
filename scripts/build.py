@@ -4,7 +4,6 @@ import subprocess
 import shutil
 
 VIVADO_PATH = '/tools/Xilinx/Vivado/2024.1/bin/vivado'
-
 HAS_VIVADO = shutil.which(VIVADO_PATH) is not None
 
 VIVADO_COMPILE = [f'{VIVADO_PATH} -mode batch -source build.tcl -nojournal -log ./log/vivado.log']
@@ -13,6 +12,9 @@ LAB_COMPILE = ['lab-bc run ./ obj']
 TABLE_COMMANDS = ['./scripts/fill_tables.py']
 
 def main():
+
+    # creates the /log directory
+    subprocess.run('mkdir -p log', shell=True)
 
     if HAS_VIVADO:
         TABLE_COMMANDS.extend(VIVADO_COMPILE)
