@@ -11,7 +11,6 @@ class Display:
     def plot_cartesian(self, x, y, z):
         self.ax.scatter(x, y, z)
 
-
     def plot_cylindrical(self, r, theta, z):
         r_theta = theta/self.angular_resolution * 2 * np.pi
 
@@ -53,6 +52,17 @@ def test_sphere():
 
     display.show()
 
+def test_arctan2():
+    num_points = 1000
+    x = np.random.randint(-32, 32, num_points)
+    y = np.random.randint(-32, 32, num_points)
+
+    display = Display()
+
+    display.plot_cartesian(x, y, np.arctan2(y, x))
+
+    display.show()
+
 
 def main():
     # num_points = 1000
@@ -67,6 +77,7 @@ def main():
     # display.show()
 
     test_sphere()
+    # test_arctan2()
 
 if __name__ == "__main__":
     main()
