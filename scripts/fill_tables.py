@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def arctan_2_lookup(resolution=64, ranges=32, filepath="./data/arctan2.mem"):
     """
@@ -23,8 +24,8 @@ def arctan_2_lookup(resolution=64, ranges=32, filepath="./data/arctan2.mem"):
 
     for x in range(-ranges, ranges):
         for y in range(-ranges, ranges):
-            table[x+ranges][y+ranges] = int((np.arctan2(y, x) + np.pi) \
-                                             * resolution / (2*np.pi))
+            table[x+ranges][y+ranges] = int((np.arctan2(x, y) + np.pi) \
+                                             * (resolution-1) / (2*np.pi))
 
     with open(filepath, 'w') as f:
         for row in table:
@@ -64,9 +65,19 @@ def distance_origin_2D(resolution=32, ranges=32, filepath="./data/distance_origi
                 f.write(f'{value:02x}\n')
     return table
 
+
+def show_table(array):
+
+    fig, ax = plt.subplots()
+    cax = ax.matshow(array, cmap='viridis')
+    fig.colorbar(cax)
+
+    plt.show()
+
+
 def main():
-    arctan_2_lookup()
-    distance_origin_2D()
+    atan_table = arctan_2_lookup()
+    distance_origin_table = distance_origin_2D()
 
 if __name__ == '__main__':
     main()
