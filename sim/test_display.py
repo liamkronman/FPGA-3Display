@@ -9,10 +9,10 @@ class Display:
         self.angular_resolution = angular_resolution
 
     def plot_cartesian(self, x, y, z):
-        self.ax.scatter(x, y, z)
+        self.ax.scatter(x, y, z, color='blue')
 
     def plot_cylindrical(self, r, theta, z):
-        r_theta = theta/self.angular_resolution * 2 * np.pi
+        r_theta = theta/(self.angular_resolution) * 2 * np.pi + np.pi
 
         x = r * np.cos(r_theta) + 32
         y = r * np.sin(r_theta) + 32
