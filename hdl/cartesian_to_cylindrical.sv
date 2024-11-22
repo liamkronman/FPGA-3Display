@@ -37,10 +37,22 @@ module cartesian_to_cylindrical #(
     assign x_int = (x_in);
     assign y_int = (y_in);
 
-    assign squared_distance = (x_int * x_int - 32) + (y_int * y_int - 32);
+    // assign squared_distance = (x_int * x_int - 32) + (y_int * y_int - 32);
 
-    logic [$clog2(RANGE*RANGE)-1:0] arctan_distance_2d_addr;
-    assign arctan_distance_2d_addr = (y_int * RANGE) + x_int;
+    logic [$clog2(RANGE*RANGE)-1:0] arctan_addr;
+    assign arctan_addr = (y_int * RANGE) + x_int;
+
+    logic [$clog2(RANGE*RANGE/4)-1:0] distance_2d_addr;
+    always_comb begin
+
+        unique case ({x_int[5], y_int[5]})
+            2'b00: distance_2d_addr = ((5'h1F - y_int[4:0]) * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower left
+            2'b01: distance_2d_addr = (y_int[4:0] * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower right
+            2'b10: distance_2d_addr = ((5'h1F - y_int[4:0]) * (RANGE/2)) + x_int[4:0]; // Upper left
+            2'b11: distance_2d_addr = (y_int[4:0] * (RANGE/2)) + x_int[4:0]; // Upper right
+            default: distance_2d_addr = 0;
+        endcase
+    end
 
 
     //  Xilinx Single Port Read First RAM
@@ -50,7 +62,7 @@ module cartesian_to_cylindrical #(
         .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
         .INIT_FILE(`FPATH(arctan2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
     ) arctan_ram (
-        .addra(arctan_distance_2d_addr),     // Address bus, width determined from RAM_DEPTH
+        .addra(arctan_addr),     // Address bus, width determined from RAM_DEPTH
         .dina(1'b0),       // RAM input data, width determined from RAM_WIDTH
         .clka(clk_in),       // Clock
         .wea(1'b0),         // Write enable
@@ -64,11 +76,11 @@ module cartesian_to_cylindrical #(
     xilinx_single_port_ram_read_first #(
         // .RAM_WIDTH($clog2(RANGE/2)),                       // Specify RAM data width
         .RAM_WIDTH(6),                       // Specify RAM data width
-        .RAM_DEPTH(RANGE*RANGE),                     // Specify RAM depth (number of entries)
+        .RAM_DEPTH(RANGE*RANGE/4),                     // Specify RAM depth (number of entries)
         .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-        .INIT_FILE(`FPATH(distance_origin_2D.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+        .INIT_FILE(`FPATH(distance_2D.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
     ) distance_ram (
-        .addra(arctan_distance_2d_addr),     // Address bus, width determined from RAM_DEPTH
+        .addra(distance_2d_addr),     // Address bus, width determined from RAM_DEPTH
         .dina(1'b0),       // RAM input data, width determined from RAM_WIDTH
         .clka(clk_in),       // Clock
         .wea(1'b0),         // Write enable
