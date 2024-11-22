@@ -35,10 +35,10 @@ def arctan_2_lookup(resolution=64, ranges=32, filepath="./data/arctan2.mem"):
     return table
 
 
-def distance_origin_2D(resolution=32, ranges=32, filepath="./data/distance_origin_2D.mem"):
+def distance_2D(resolution=32, ranges=32, filepath="./data/distance_2D.mem"):
     """
     This function creates a lookup table for the distance from the origin.
-    The table is a 2D array of size ranges*2 x ranges*2.
+    The table is a 2D array of size ranges x ranges.
     All values are in the range [0, resolution].
     This function creates the table and saves it in the given filepath as a
     .mem file, in hex format
@@ -52,11 +52,11 @@ def distance_origin_2D(resolution=32, ranges=32, filepath="./data/distance_origi
     np.array: 2D numpy array, the lookup
     """
 
-    table = np.zeros((ranges*2, ranges*2), dtype=int)
+    table = np.zeros((ranges, ranges), dtype=int)
 
-    for x in range(-ranges, ranges):
-        for y in range(-ranges, ranges):
-            table[x+ranges][y+ranges] = int(np.sqrt(x**2 + y**2) \
+    for x in range(ranges):
+        for y in range(ranges):
+            table[x][y] = int(np.sqrt(x**2 + y**2) \
                                              * resolution / ranges)
 
     with open(filepath, 'w') as f:
@@ -77,7 +77,9 @@ def show_table(array):
 
 def main():
     atan_table = arctan_2_lookup()
-    distance_origin_table = distance_origin_2D()
+    # distance_origin_table = distance_origin_2D()
+    distance_table = distance_2D()
+    show_table(distance_table)
 
 if __name__ == '__main__':
     main()
