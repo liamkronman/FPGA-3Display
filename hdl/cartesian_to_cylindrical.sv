@@ -46,10 +46,18 @@ module cartesian_to_cylindrical #(
     always_comb begin
 
         unique case ({x_int[5], y_int[5]})
-            2'b00: distance_2d_addr = ((5'h1F - y_int[4:0]) * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower left
-            2'b01: distance_2d_addr = (y_int[4:0] * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower right
-            2'b10: distance_2d_addr = ((5'h1F - y_int[4:0]) * (RANGE/2)) + x_int[4:0]; // Upper left
-            2'b11: distance_2d_addr = (y_int[4:0] * (RANGE/2)) + x_int[4:0]; // Upper right
+            2'b00: distance_2d_addr = 
+                ((5'h1F - y_int[4:0]) * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower left
+                
+            2'b01: distance_2d_addr = 
+                (y_int[4:0] * (RANGE/2)) + 5'h1F - x_int[4:0]; // Lower right
+                
+            2'b10: distance_2d_addr = 
+                ((5'h1F - y_int[4:0]) * (RANGE/2)) + x_int[4:0]; // Upper left
+                
+            2'b11: distance_2d_addr = 
+                (y_int[4:0] * (RANGE/2)) + x_int[4:0]; // Upper right
+                
             default: distance_2d_addr = 0;
         endcase
     end
