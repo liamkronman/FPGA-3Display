@@ -2,14 +2,14 @@
 #set limits (don't change unless you're running local):
 #if running remote, increasing threads will potentially cause your code to submission to get bounced
 #due to a process watchdog.
-set_param general.maxThreads 4
+set_param general.maxThreads 2
 #Define target part and create output directory
 # The Urbana Spartan 7 uses this chip:
 # xc7s50 refers to the fact that it is a Spartan-7-50 FPGA
 # csga324 refers to its package it is in
 # refers to the "speed grade" of the chip
 
-set partNum xc7s50csga324-1
+set partNum xc7a35tcpg236-1 
 set outputDir obj
 file mkdir $outputDir
 set files [glob -nocomplain "$outputDir/*"]
