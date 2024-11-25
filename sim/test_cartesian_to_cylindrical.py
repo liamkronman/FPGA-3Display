@@ -79,6 +79,8 @@ async def test_a(dut):
 
         
     await ClockCycles(dut.clk_in,10)
+    await ReadOnly()
+    
     test_display.show()
 
 
