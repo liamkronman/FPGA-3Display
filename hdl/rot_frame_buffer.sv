@@ -1,3 +1,4 @@
+`default_nettype none
 module rot_frame_buffer
 #( parameter ROTATIONAL_RES = 32)
 (
@@ -27,3 +28,4 @@ module rot_frame_buffer
 
 
 endmodule
+`default_nettype none

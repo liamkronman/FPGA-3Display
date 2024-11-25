@@ -1,14 +1,16 @@
-module detect_to_theta #(
-    parameter THETA_RES=27,
-)
-(
-    input wire ir_tripped,
-    input wire clk_in,
-    input wire rst_in,
-    output logic [THETA_RES-1:0] theta, // where we currently are in the rotation
-    output logic period_ready, // single-cycle high for when new period is ready to be sent
-    output logic [THETA_RES-1:0] period // counter since last time 
-);
+`timescale 1ns / 1ps
+`default_nettype none
+// module detect_to_theta #(
+//     parameter THETA_RES=27
+// )
+// (
+//     input wire ir_tripped,
+//     input wire clk_in,
+//     input wire rst_in,
+//     output logic [THETA_RES-1:0] theta, // where we currently are in the rotation
+//     output logic period_ready, // single-cycle high for when new period is ready to be sent
+//     output logic [THETA_RES-1:0] period // counter since last time 
+// );
     // inspired by evt_counter
 
     // THETA_RES thought process:
@@ -43,4 +45,5 @@ module detect_to_theta #(
     //         end
     //     end
     // end
-endmodule
+// endmodule
+`default_nettype none
