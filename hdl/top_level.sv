@@ -50,7 +50,7 @@ module top_level #(
     );
 
     frame_manager fm (
-        .clk_in(sysclk),
+        .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .mode(2'b01), // hard-coded to SPHERE mode for now
         .theta(theta),
@@ -60,7 +60,7 @@ module top_level #(
     );
 
     hub75_output hub75 (
-        .clk_in(sysclk),
+        .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .col_index(hub75_addr),
         .rgb0(hub75_rgb0),
@@ -69,8 +69,6 @@ module top_level #(
         .led_output_enable(hub75_OE),
         .led_clk(hub75_clk)
     );
-
-
 endmodule
 
 `default_nettype none
