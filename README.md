@@ -1,6 +1,6 @@
 # FPGA 3Display
 
-Final project for MIT 6.2050.
+Final project for MIT 6.2050 Digital Systems Laboratory.
 > Let's make a hologram!
 
 *jtma, lkronman, nfelleke*

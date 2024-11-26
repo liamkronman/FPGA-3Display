@@ -6,13 +6,14 @@ module hub75_output #(
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
     parameter THETA_RES=8,
-    parameter PERIOD = 100 //set to be a function of theta in the future
+    parameter PERIOD=100, //set to be a function of theta in the future
+    parameter RGB_RES=9
 )
  (
     input wire rst_in,
     input wire clk_in,
-    input wire [8:0][63:0] column_data0,
-    input wire [8:0][63:0] column_data1,
+    input wire [NUM_ROWS-1:0][RGB_RES:0] column_data0,
+    input wire [NUM_ROWS-1:0][RGB_RES:0] column_data1,
     input wire [$clog2(SCAN_RATE)-1:0] col_index,
     
     output logic [2:0] rgb0,
@@ -33,8 +34,8 @@ module hub75_output #(
    logic [1:0] pwm_counter; 
 
    logic clk_msk; 
-   logic [NUM_ROWS-1:0][8:0] column0;
-   logic [NUM_ROWS - 1: 0][8:0] column1;
+   logic [NUM_ROWS-1:0][RGB_RES:0] column0;
+   logic [NUM_ROWS-1:0][RGB_RES:0] column1;
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
 
    assign tready = state == 0;

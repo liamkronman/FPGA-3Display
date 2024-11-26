@@ -20,7 +20,7 @@ module frame_manager #(
 );
     logic [$clog2(SCAN_RATE)-1:0] col_index; // goes from 0 - 31
 
-    logic [$clog2(NUM_COLS)-1:0] col_indices; // 1 for if that column is represented at this index, 0 if column isn't represented
+    logic [NUM_COLS-1:0] col_indices; // 1 for if that column is represented at this index, 0 if column isn't represented
                                     // used for scanline optimization
  
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] sphere_cols;
@@ -41,9 +41,9 @@ module frame_manager #(
     );
 
     always_comb begin
-        intermediate_col_num1 = col_index_intermediate;
-        intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
-        col_num1 = col_index;
+        // intermediate_col_num1 = col_index_intermediate;
+        // intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
+        // col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
     end
 
@@ -68,14 +68,14 @@ module frame_manager #(
     );
 
     logic old_hub75_ready;
-    initial begin
-        col_index = 0;
-        col_index_intermediate = 0;
-        data_valid = 0;
-        columns = 0;
-        col_num1 = 0;
-        col_num2 = 0;
-    end
+    // initial begin
+    //     col_index = 0;
+    //     col_index_intermediate = 0;
+    //     data_valid = 0;
+    //     columns = 0;
+    //     col_num1 = 0;
+    //     col_num2 = 0;
+    // end
 
     always_ff @(posedge clk_in) begin
         if (rst_in) begin // reset or theta has changed
@@ -88,8 +88,9 @@ module frame_manager #(
         end else begin
 
             if (hub75_ready == 1) begin // data just became ready (maybe useless as ready is 1-cycle)
-                col_index <= col_index + 1;
+                col_num1 <= col_num1 + 1;
                 columns <= sphere_cols;
+                col_index_intermediate <= col_index_intermediate + 1;
                 /*if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
                     col_index <= col_index_intermediate;
                     case (mode)

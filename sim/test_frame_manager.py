@@ -14,7 +14,7 @@ async def test_frame_manager(dut):
     RGB_RES = 9
 
     # Start clock
-    cocotb.start_soon(Clock(dut.clk_in, 10, units="ns").start())
+    cocotb.start_soon(Clock(dut.clk_in, 83, units="ns").start()) # 83 for 12MHz testing
 
     # Reset DUT
     dut.rst_in.value = 1

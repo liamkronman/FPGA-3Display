@@ -14,6 +14,7 @@ module sphere_frame #(
     
     // PLAN: approach this mathematically first, and explore BRAM/SRAM if that method starts choking.
 
+    // test: turn all white. doesn't depend on column_index's
     always_comb begin
         // Set all rows in both columns to high
         for (int y = 0; y < NUM_ROWS; y++) begin
