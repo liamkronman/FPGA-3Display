@@ -70,7 +70,7 @@ module frame_manager #(
             col_index <= 0;
             col_index_intermediate <= 0;
         end else begin
-            if (col_indices[col_index_intermediate]) begin
+            if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
                 col_index <= col_index_intermediate;
                 case (mode)
                     2'b00: columns <= 0; // cylinder mode (TODO: FIX)
@@ -80,7 +80,11 @@ module frame_manager #(
                     default: columns <= sphere_cols;
                 endcase
             end
-            col_index_intermediate <= col_index_intermediate + 1;
+            if (col_index_intermediate == SCAN_RATE) begin
+                col_index_intermediate <= 0;
+            end else begin
+                col_index_intermediate <= col_index_intermediate + 1;
+            end
             old_theta <= theta;
         end
     end
