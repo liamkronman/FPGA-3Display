@@ -78,7 +78,7 @@ module frame_manager #(
             col_num1 <= 0;
             col_num2 <= 0;
         end else begin
-            if (hub75_ready & ~old_hub75_ready) begin // data just became ready (maybe useless as ready is 1-cycle)
+            if (hub75_ready) begin // data just became ready (maybe useless as ready is 1-cycle)
                 if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
                     col_index <= col_index_intermediate;
                     case (mode)
@@ -101,7 +101,8 @@ module frame_manager #(
 
                 old_theta <= theta;
                 old_hub75_ready <= hub75_ready;
-            end else if (data_valid) begin
+            end 
+            if (data_valid) begin
                 data_valid <= 0;
             end
         end

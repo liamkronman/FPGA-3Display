@@ -6,7 +6,7 @@ module hub75_output #(
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
     parameter THETA_RES=8,
-    parameter PERIOD = 10 //set to be a function of theta in the future
+    parameter PERIOD = 100 //set to be a function of theta in the future
 )
  (
     input wire rst_in,
@@ -34,47 +34,47 @@ module hub75_output #(
    logic [1:0] pwm_counter; 
 
    logic clk_msk; 
-   logic [8:0][NUM_ROWS-1:0] column0;
-   logic [8:0][NUM_ROWS - 1: 0] column1;
+   logic [NUM_ROWS-1:0][8:0] column0;
+   logic [NUM_ROWS - 1: 0][8:0] column1;
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
 
    assign tready = state == 0;
     
-   always_comb begin
+   /*always_comb begin
     if(pwm_counter == 0) begin
 
-        rgb0[0] = column0[0][pixel_counter] ;
-        rgb0[1] = column0[3][pixel_counter];
-        rgb0[2] = column0[6][pixel_counter];
+        rgb0[0] = column0[pixel_counter][0] ;
+        rgb0[1] = column0[pixel_counter][0];
+        rgb0[2] = column0[pixel_counter][0];
 
-        rgb1[0] = column1[0][pixel_counter];
-        rgb1[1] = column1[3][pixel_counter];
-        rgb1[2] = column1[6][pixel_counter];
+        rgb1[0] = column1[pixel_counter][0];
+        rgb1[1] = column1[pixel_counter][0];
+        rgb1[2] = column1[pixel_counter][0];
 
 
     end
     else if(pwm_counter == 1) begin
-        rgb0[0] = column0[1][pixel_counter] ;
-        rgb0[1] = column0[4][pixel_counter];
-        rgb0[2] = column0[7][pixel_counter];
+        rgb0[0] = column0[pixel_counter][0] ;
+        rgb0[1] = column0[pixel_counter][3];
+        rgb0[2] = column0[pixel_counter][6];
 
-        rgb1[0] = column1[1][pixel_counter];
-        rgb1[1] = column1[4][pixel_counter];
-        rgb1[2] = column1[7][pixel_counter];
+        rgb1[0] = column1[pixel_counter][0];
+        rgb1[1] = column1[pixel_counter][3];
+        rgb1[2] = column1[pixel_counter][6];
     end
     else if(pwm_counter == 2) begin
-        rgb0[0] = column0[2][pixel_counter] ;
-        rgb0[1] = column0[5][pixel_counter];
-        rgb0[2] = column0[8][pixel_counter];
+        rgb0[0] = column0[pixel_counter][0] ;
+        rgb0[1] = column0[pixel_counter][3];
+        rgb0[2] = column0[pixel_counter][6];
 
-        rgb1[0] = column1[2][pixel_counter];
-        rgb1[1] = column1[5][pixel_counter];
-        rgb1[2] = column1[8][pixel_counter];
+        rgb1[0] = column1[pixel_counter][0];
+        rgb1[1] = column1[pixel_counter][3];
+        rgb1[2] = column1[pixel_counter][6];
     end
     
 
 
-   end
+   end*/
 
    always_ff @(posedge clk_in) begin
     if(rst_in) begin
@@ -105,6 +105,15 @@ module hub75_output #(
     else if(state == 1) begin //BCM
 
         led_output_enable <= 1;
+        rgb0[0] <=1;
+        rgb0[1] <=1;
+        rgb0[2] <=1;
+
+        rgb1[0] <=1;
+        rgb1[1] <=1;
+        rgb1[2] <=1;
+
+
         
         
         if(pixel_counter == 63 ) begin
