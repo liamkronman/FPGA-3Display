@@ -60,7 +60,7 @@ module frame_manager #(
         .columns(cube_cols)
     );
 
-    boids_lookup bf (
+    boids_frame bf (
         .theta(theta),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
