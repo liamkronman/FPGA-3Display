@@ -15,7 +15,6 @@ module frame_manager #(
     output logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
     output logic [$clog2(SCAN_RATE):0] col_num2,
-    output logic valid
 );
     logic [$clog2(SCAN_RATE)-1:0] col_index; // goes from 0 - 31
 
@@ -34,14 +33,14 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
-     cc (
+    col_calc cc (
         .theta(theta),
         .col_indices(col_indices) // OUTPUT of cc
     );
 
     always_comb begin
         intermediate_col_num1 = col_index_intermediate;
-        incol_calctermediate_col_num2 = col_index_intermediate+SCAN_RATE;
+        intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
         col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
     end
