@@ -68,9 +68,17 @@ module frame_manager #(
     );
 
     logic old_hub75_ready;
+    initial begin
+        col_index = 0;
+        col_index_intermediate = 0;
+        data_valid = 0;
+        columns = 0;
+        col_num1 = 0;
+        col_num2 = 0;
+    end
 
     always_ff @(posedge clk_in) begin
-        if (rst_in || (old_theta & ~theta)) begin // reset or theta has changed
+        if (rst_in) begin // reset or theta has changed
             col_index <= 0;
             col_index_intermediate <= 0;
             data_valid <= 0;
@@ -79,9 +87,10 @@ module frame_manager #(
             col_num2 <= 0;
         end else begin
 
-            col_index <= col_index + 1;
             if (hub75_ready == 1) begin // data just became ready (maybe useless as ready is 1-cycle)
-                if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
+                col_index <= col_index + 1;
+                columns <= sphere_cols;
+                /*if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
                     col_index <= col_index_intermediate;
                     case (mode)
                         2'b00: columns <= 0; // cylinder mode (TODO: FIX)
@@ -95,7 +104,7 @@ module frame_manager #(
                     col_index_intermediate <= 0;
                 end else begin
                     col_index_intermediate <= col_index_intermediate + 1;
-                end
+                end*/
                 // There's a problem with propagation delay of the columns
                 //  * For example, in the sphere situation, the combinational computations might have a propagation delay which isn't accounted for.
                 // Therefore, data_valid may not necessarily make sense to happen in the same cycle -- even if we can somehow get away with it with the 83.3ns cycle length on 12MHz.

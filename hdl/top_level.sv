@@ -54,9 +54,9 @@ module top_level #(
         .period(period)
     );
 
-    /*frame_manager fm (
+    frame_manager fm (
         .clk_in(sysclk), // use a different clock?
-        .rst_in(sys_rst),
+        .rst_in(0),
         .mode(2'b01), // hard-coded to SPHERE mode for now
         .theta(theta),
         .columns({column0, column1}),
@@ -64,17 +64,12 @@ module top_level #(
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
         .data_valid(hub75_data_valid)
-    );  */
+    );  
 
-
-    assign hub75_addr = col_num1;
+    always_comb begin
+        hub75_addr = col_num1;
+    end
     
-    
-initial begin
-
-    hub75_addr = 10;
-
-end
 
     hub75_output hub75 (
         .clk_in(sysclk), // use a different clock?
@@ -91,13 +86,11 @@ end
         .led_output_enable(hub75_OE),
         .led_clk(hub75_clk)
     );
-    always_ff @(posedge sysclk) begin  
+    /*always_ff @(posedge sysclk) begin  
         if(hub75_ready == 1) begin
-
             hub75_addr <= hub75_addr + 1;
-        end
-            
-    end
+    end*/
+    //end
 endmodule
 
 `default_nettype none
