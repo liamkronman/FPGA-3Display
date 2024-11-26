@@ -42,11 +42,13 @@ async def test_frame_manager(dut):
                 print(f"col_idx={col_idx}, row={row}")
                 expected_value = 1  # Expected value for sphere_cols
                 flat_index = col_idx * NUM_ROWS + row
-                actual_value = dut.columns[flat_index].value
-                assert actual_value == expected_value, (
-                    f"Mismatch in sphere mode: col_idx={col_idx}, row={row}, "
-                    f"expected={expected_value}, actual={actual_value}"
-                )
+                for rgb_idx in range(RGB_RES):
+                    # Validate the RGB values
+                    actual_value = dut.columns[flat_index*RGB_RES+rgb_idx].value
+                    assert actual_value == expected_value, (
+                        f"Mismatch in sphere mode: col_idx={col_idx}, row={row},rgb_idx={rgb_idx}\n"
+                        f"expected={expected_value}, actual={actual_value}"
+                    )
 
         # Advance the clock
         await ClockCycles(dut.clk_in, 1)
