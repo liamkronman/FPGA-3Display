@@ -48,8 +48,8 @@ module frame_manager #(
     end
 
     sphere_frame sf ( // no need for a theta
-        .column_index1(intermediate_col_num1),
-        .column_index2(intermediate_col_num2),
+        .column_index1(col_index_intermediate),
+        .column_index2(col_index_intermediate+SCAN_RATE),
         .columns(sphere_cols)
     );
 
