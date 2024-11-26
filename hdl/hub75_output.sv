@@ -24,8 +24,7 @@ module hub75_output #(
 
     //AXI Stream logic
     input wire         tvalid,
-    output logic         tready,
-    input wire         tlast
+    output logic         tready
 );
 
    logic [5:0] pixel_counter;

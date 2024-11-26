@@ -78,7 +78,9 @@ module frame_manager #(
             col_num1 <= 0;
             col_num2 <= 0;
         end else begin
-            if (hub75_ready) begin // data just became ready (maybe useless as ready is 1-cycle)
+
+            col_index <= col_index + 1;
+            if (hub75_ready == 1) begin // data just became ready (maybe useless as ready is 1-cycle)
                 if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
                     col_index <= col_index_intermediate;
                     case (mode)

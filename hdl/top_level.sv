@@ -17,10 +17,11 @@ module top_level #(
     output logic [2:0] hub75_rgb1,
     output logic hub75_latch,
     output logic hub75_OE, 
-    output logic hub75_clk
+    output logic hub75_clk,
+    input wire [1:0] btn
 );
     logic sys_rst;
-    assign sys_rst = 0;
+    assign sys_rst = btn[0];
     // tie led0 to ir_led_control and led1 to low
     ir_led_control ilc(
         .ir_tripped(ir_tripped),
@@ -31,7 +32,7 @@ module top_level #(
     //TODO: CREATE 100 Mhz clock
 
     //TODO: Create 20 MHZ clock
-    assign hub75_addr = 16;
+    
 
     logic [THETA_RES-1:0] theta;
     logic period_ready;
@@ -53,7 +54,7 @@ module top_level #(
         .period(period)
     );
 
-    frame_manager fm (
+    /*frame_manager fm (
         .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .mode(2'b01), // hard-coded to SPHERE mode for now
@@ -63,7 +64,17 @@ module top_level #(
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
         .data_valid(hub75_data_valid)
-    );
+    );  */
+
+
+    assign hub75_addr = col_num1;
+    
+    
+initial begin
+
+    hub75_addr = 10;
+
+end
 
     hub75_output hub75 (
         .clk_in(sysclk), // use a different clock?
@@ -80,6 +91,13 @@ module top_level #(
         .led_output_enable(hub75_OE),
         .led_clk(hub75_clk)
     );
+    always_ff @(posedge sysclk) begin  
+        if(hub75_ready == 1) begin
+
+            hub75_addr <= hub75_addr + 1;
+        end
+            
+    end
 endmodule
 
 `default_nettype none
