@@ -22,8 +22,10 @@ module sphere_frame #(
     logic [$clog2(SCAN_RATE)-1:0] x1, x2, y_offset;
 
     always_comb begin
-        column1 = '0;
-        column2 = '0;
+        for (int y = 0; y < NUM_ROWS; y++) begin
+            column1[y] = '0;
+            column2[y] = '0;
+        end
 
         for (int y = 0; y < NUM_ROWS; y++) begin
             x1 = column_index1 - CENTER_X;

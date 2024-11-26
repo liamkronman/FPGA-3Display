@@ -1,54 +1,54 @@
 import cocotb
 import os
-import sys
-from math import log
-import logging
-from pathlib import Path
 from cocotb.clock import Clock
-from cocotb.triggers import Timer, ClockCycles, RisingEdge, FallingEdge, ReadOnly,with_timeout
-from cocotb.utils import get_sim_time as gst
+from cocotb.triggers import Timer, ClockCycles
+from pathlib import Path
 from cocotb.runner import get_runner
 
-async def apply_theta_detection(dut, cycles):
-    for i in range(cycles):
-        await ClockCycles(dut.clk_in, 1)
-        print(f"Cycle {i}")
-        print(f"Theta: {dut.theta.value}")
-        assert dut.theta.value == i
-    dut.ir_tripped.value = 1
-    await ClockCycles(dut.clk_in, 1)
-    dut.ir_tripped.value = 0
-    await ClockCycles(dut.clk_in, 1)
-    print(f"Period ready: {dut.period_ready.value}")
-    assert dut.period_ready.value == 1
-    assert dut.period.value == cycles
-
-
 @cocotb.test()
-async def test_detect_to_theta(dut):
-    """Test detect to theta module functionality"""
-    # Start clock
-    cocotb.start_soon(Clock(dut.clk_in, 10, units="ns").start())
-    dut.rst_in.value = 1
-    dut.ir_tripped.value = 0
-    await ClockCycles(dut.clk_in, 5)
-    dut.rst_in.value = 0
-    # test is tripping the IR on 10, 11, 12, etc. cycles
-    for i in [10, 11, 12, 13, 14, 15]:
-        await apply_theta_detection(dut, i)
-        dut.rst_in.value = 1
-        await ClockCycles(dut.clk_in, 5)
-        dut.rst_in.value = 0
-    
+async def test_sphere_frame(dut):
+    """Test sphere_frame module functionality."""
+    # Parameters for the test
+    RADIUS = 32
+    CENTER_Y = 32
+    RGB_RES = 9  # Ensure it matches the DUT parameter
 
-def detect_to_theta_runner():
-    """Runner function for detect to theta testbench."""
+    # Test different column indices
+    test_indices = [0, 16, 32, 48, 63]  # Cover edges and center of the range
+
+    for col_idx1 in test_indices:
+        for col_idx2 in test_indices:
+            # Set the input column indices
+            dut.column_index1.value = col_idx1
+            dut.column_index2.value = col_idx2
+
+            # Allow time for propagation
+            await Timer(1, units="ns")
+
+            # Validate column1 and column2
+            for row in range(64):  # Assuming NUM_ROWS=64
+                actual_column1 = dut.columns[(0 * 64 + row)].value  # Flattened access
+                actual_column2 = dut.columns[(1 * 64 + row)].value  # Flattened access
+
+                expected_column1 = (2**RGB_RES - 1) if (col_idx1 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+                expected_column2 = (2**RGB_RES - 1) if (col_idx2 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+                
+                print(f"Row {row}: {actual_column1}, {actual_column2}")
+                print(f"Expected: {expected_column1}, {expected_column2}")
+                assert actual_column1 == expected_column1, f"Mismatch for column1 at row {row}, col_idx1={col_idx1}"
+                assert actual_column2 == expected_column2, f"Mismatch for column2 at row {row}, col_idx2={col_idx2}"
+
+            print(f"Test passed for column indices {col_idx1}, {col_idx2}")
+
+
+def sphere_frame_runner():
+    """Runner function for sphere frame testbench."""
     hdl_toplevel_lang = os.getenv("HDL_TOPLEVEL_LANG", "verilog")
     sim = os.getenv("SIM", "icarus")  # You can switch to another simulator if needed
     proj_path = Path(__file__).resolve().parent.parent
 
     # Source files for the design
-    sources = [proj_path / "hdl" / "detect_to_theta.sv"]
+    sources = [proj_path / "hdl" / "sphere_frame.sv"]
     build_test_args = ["-Wall"]
     parameters = {}
 
@@ -56,7 +56,7 @@ def detect_to_theta_runner():
     runner = get_runner(sim)
     runner.build(
         sources=sources,
-        hdl_toplevel="detect_to_theta",
+        hdl_toplevel="sphere_frame",
         always=True,
         build_args=build_test_args,
         parameters=parameters,
@@ -66,11 +66,11 @@ def detect_to_theta_runner():
     
     # Run the test
     runner.test(
-        hdl_toplevel="detect_to_theta",
-        test_module="test_detect_to_theta",
+        hdl_toplevel="sphere_frame",
+        test_module="test_sphere_frame",
         waves=True
     )
 
 
 if __name__ == "__main__":
-    detect_to_theta_runner()
+    sphere_frame_runner()
