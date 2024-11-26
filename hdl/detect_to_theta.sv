@@ -14,7 +14,7 @@ module detect_to_theta #(
     // inspired by evt_counter
 
     // THETA_RES thought process:
-    //  * 100MHz clock => 10ns periods
+    //  * 100MHz clock => 10ns periods (make sure this is the case!! not like 12MHz or smth)
     //  * Suppose we are rotating (conservatively) at 300RPM => 5Hz => 0.2s per revolution
     //  * Highest theta is 0.2s / 10ns = 20M
     //  * # of bits = ceil(log2(20M)) = 25 bits (minimum)
