@@ -12,9 +12,11 @@ module frame_manager #(
     input wire [1:0] mode, // mode 0: cylinder, mode 1: sphere, mode 2: cube, mode 3: boids
     input wire clk_in,
     input wire [THETA_RES-1:0] theta, // suppose 8 bit resolution for theta
+    input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
     output logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
     output logic [$clog2(SCAN_RATE):0] col_num2,
+    output logic data_valid
 );
     logic [$clog2(SCAN_RATE)-1:0] col_index; // goes from 0 - 31
 
@@ -65,27 +67,43 @@ module frame_manager #(
         .columns(boids_cols)
     );
 
+    logic old_hub75_ready;
+
     always_ff @(posedge clk_in) begin
         if (rst_in || (old_theta & ~theta)) begin // reset or theta has changed
             col_index <= 0;
             col_index_intermediate <= 0;
+            data_valid <= 0;
+            columns <= 0;
+            col_num1 <= 0;
+            col_num2 <= 0;
         end else begin
-            if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
-                col_index <= col_index_intermediate;
-                case (mode)
-                    2'b00: columns <= 0; // cylinder mode (TODO: FIX)
-                    2'b01: columns <= sphere_cols; // sphere mode
-                    2'b10: columns <= cube_cols; // cube mode
-                    2'b11: columns <= boids_cols; // boids mode
-                    default: columns <= sphere_cols;
-                endcase
+            if (hub75_ready & ~old_hub75_ready) begin // data just became ready (maybe useless as ready is 1-cycle)
+                if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
+                    col_index <= col_index_intermediate;
+                    case (mode)
+                        2'b00: columns <= 0; // cylinder mode (TODO: FIX)
+                        2'b01: columns <= sphere_cols; // sphere mode
+                        2'b10: columns <= cube_cols; // cube mode
+                        2'b11: columns <= boids_cols; // boids mode
+                        default: columns <= sphere_cols;
+                    endcase
+                end
+                if (col_index_intermediate == SCAN_RATE) begin
+                    col_index_intermediate <= 0;
+                end else begin
+                    col_index_intermediate <= col_index_intermediate + 1;
+                end
+                // There's a problem with propagation delay of the columns
+                //  * For example, in the sphere situation, the combinational computations might have a propagation delay which isn't accounted for.
+                // Therefore, data_valid may not necessarily make sense to happen in the same cycle -- even if we can somehow get away with it with the 83.3ns cycle length on 12MHz.
+                data_valid <= 1;
+
+                old_theta <= theta;
+                old_hub75_ready <= hub75_ready;
+            end else if (data_valid) begin
+                data_valid <= 0;
             end
-            if (col_index_intermediate == SCAN_RATE) begin
-                col_index_intermediate <= 0;
-            end else begin
-                col_index_intermediate <= col_index_intermediate + 1;
-            end
-            old_theta <= theta;
         end
     end
 endmodule
