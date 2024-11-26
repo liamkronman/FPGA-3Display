@@ -41,8 +41,8 @@ module frame_manager #(
     );
 
     always_comb begin
-        // intermediate_col_num1 = col_index_intermediate;
-        // intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
+        intermediate_col_num1 = col_index_intermediate;
+        intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
         // col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
     end
@@ -88,11 +88,11 @@ module frame_manager #(
         end else begin
 
             if (hub75_ready == 1) begin // data just became ready (maybe useless as ready is 1-cycle)
-                col_num1 <= col_num1 + 1;
-                columns <= sphere_cols;
-                col_index_intermediate <= col_index_intermediate + 1;
-                /*if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
-                    col_index <= col_index_intermediate;
+                // col_num1 <= col_num1 + 1;
+                // columns <= sphere_cols;
+                // col_index_intermediate <= col_index_intermediate + 1;
+                if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
+                    col_num1 <= col_index_intermediate;
                     case (mode)
                         2'b00: columns <= 0; // cylinder mode (TODO: FIX)
                         2'b01: columns <= sphere_cols; // sphere mode
@@ -105,7 +105,7 @@ module frame_manager #(
                     col_index_intermediate <= 0;
                 end else begin
                     col_index_intermediate <= col_index_intermediate + 1;
-                end*/
+                end
                 // There's a problem with propagation delay of the columns
                 //  * For example, in the sphere situation, the combinational computations might have a propagation delay which isn't accounted for.
                 // Therefore, data_valid may not necessarily make sense to happen in the same cycle -- even if we can somehow get away with it with the 83.3ns cycle length on 12MHz.
