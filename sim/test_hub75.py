@@ -29,6 +29,11 @@ async def test_a(dut):
 
     dut.col_index.value = 16
 
+    dut.tvalid.value = 1
+    dut.columns_data = np.ones(2*64 * 8)
+    await ClockCycles(dut.clk_in,2)
+    dut.tvalid.value = 0
+
         
     await ClockCycles(dut.clk_in,10000)
     await ReadOnly()

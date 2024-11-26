@@ -35,17 +35,17 @@ module hub75_output #(
 
    logic clk_msk; 
    logic [8:0][NUM_ROWS-1:0] column0;
-   logic [8:0]
+   logic [8:0][NUM_ROWS - 1: 0] column1;
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
     
    always_comb begin
-    rgb0[0] = columns[0][pixel_counter] ;
-    rgb0[1] = columns[0][3][pixel_counter];
-    rgb0[2] = columns[0][6][pixel_counter];
+    rgb0[0] = column0[0][pixel_counter] ;
+    rgb0[1] = column0[3][pixel_counter];
+    rgb0[2] = column0[6][pixel_counter];
 
-    rgb1[0] = columns[1][0][pixel_counter];
-    rgb1[1] = columns[1][3][pixel_counter];
-    rgb1[2] = columns[1][6][pixel_counter];
+    rgb1[0] = column1[0][pixel_counter];
+    rgb1[1] = column1[3][pixel_counter];
+    rgb1[2] = column1[6][pixel_counter];
 
 
    end
@@ -68,7 +68,8 @@ module hub75_output #(
 
         if(tvalid) begin
             state <= 1;
-            columns <= columns_data;
+            column0 <= column_data0;
+            column1 <= column_data1;
         end
 
 
