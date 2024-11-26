@@ -18,8 +18,8 @@ module sphere_frame #(
     // always_comb begin
     //     // Set all rows in both columns to high
     //     for (int y = 0; y < NUM_ROWS; y++) begin
-    //         columns[0][y] = {RGB_RES{1'b1}}; // Set all bits in RGB_RES to 1
-    //         columns[1][y] = {RGB_RES{1'b1}}; // Set all bits in RGB_RES to 1
+    //         columns[0][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
+    //         columns[1][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
     //     end
     // end
 
@@ -36,18 +36,18 @@ module sphere_frame #(
             column2[y] = '0;
         end
 
-        // for (int y = 0; y < NUM_ROWS; y++) begin
-        //     x1 = column_index1 - CENTER_X;
-        //     x2 = column_index2 - CENTER_X;
-        //     y_offset = y - CENTER_Y;
+        for (int y = 0; y < NUM_ROWS; y++) begin
+            x1 = column_index1 - CENTER_X;
+            x2 = column_index2 - CENTER_X;
+            y_offset = y - CENTER_Y;
 
-        //     if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-        //         column1[y] = {RGB_RES{1'b1}};
-        //     end
-        //     if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-        //         column2[y] = {RGB_RES{1'b1}};
-        //     end
-        // end
+            if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+                column1[y] = {RGB_RES{1'b1}};
+            end
+            if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+                column2[y] = {RGB_RES{1'b1}};
+            end
+        end
 
         columns[0] = column1;
         columns[1] = column2;
