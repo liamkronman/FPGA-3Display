@@ -5,7 +5,8 @@ module hub75_output #(
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
-    parameter THETA_RES=8
+    parameter THETA_RES=8,
+    parameter PERIOD = 1000
 )
  (
     input wire rst_in,
@@ -27,7 +28,7 @@ module hub75_output #(
 );
 
    logic [5:0] pixel_counter;
-   logic [5:0] period_counter;
+   logic [10:0] period_counter;
    logic [2:0] state;
    logic [2:0] pwm_counter; 
 
@@ -72,14 +73,21 @@ module hub75_output #(
         if(pixel_counter == 63 ) begin
             state <= 2;
             clk_msk <= 0;
+            led_latch <=1;
         end
         else begin
             pixel_counter <= pixel_counter + 1;
         end
     end
     else if(state == 2) begin //WAITING PERIOID
-    led_latch <=1;
-    state <= 0;
+    led_output_enable <= 0;
+    led_latch <= 0;
+
+    period_counter <= period_counter+ 1;
+    if(period_counter == PERIOD) begin
+        period_counter <= 0;
+        state <= 0;
+    end
 
     
 
