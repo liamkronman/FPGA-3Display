@@ -37,6 +37,8 @@ module hub75_output #(
    logic [8:0][NUM_ROWS-1:0] column0;
    logic [8:0][NUM_ROWS - 1: 0] column1;
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
+
+   assign tready = state == 0;
     
    always_comb begin
     rgb0[0] = column0[0][pixel_counter] ;
