@@ -1,16 +1,16 @@
 `timescale 1ns / 1ps
 `default_nettype none
-// module detect_to_theta #(
-//     parameter THETA_RES=27
-// )
-// (
-//     input wire ir_tripped,
-//     input wire clk_in,
-//     input wire rst_in,
-//     output logic [THETA_RES-1:0] theta, // where we currently are in the rotation
-//     output logic period_ready, // single-cycle high for when new period is ready to be sent
-//     output logic [THETA_RES-1:0] period // counter since last time 
-// );
+module detect_to_theta #(
+    parameter THETA_RES=27
+)
+(
+    input wire ir_tripped,
+    input wire clk_in,
+    input wire rst_in,
+    output logic [THETA_RES-1:0] theta, // where we currently are in the rotation
+    output logic period_ready, // single-cycle high for when new period is ready to be sent
+    output logic [THETA_RES-1:0] period // counter since last time 
+);
     // inspired by evt_counter
 
     // THETA_RES thought process:
@@ -24,26 +24,27 @@
     //  * Is the sensor synchronized with the FPGA clock?
     //  * period lags behind theta by one revolution
 
-    // COMMENTED FOR TESTING ir_led_control (BECAUSE UNFINISHED)
-    // always_ff @(posedge clk_in) begin
-    //     if (rst_in) begin
-    //         theta <= 0;
-    //         period_ready <= 0;
-    //         period <= 0;
-    //     end else begin
-    //         if (ir_tripped) begin
-    //             period_ready <= 1;
-    //         end else begin
-    //             period_ready <= 0;
-    //             period <= period + 1;
-    //             theta <= theta + 1;
-    //         end
-    //         if (period_ready) begin
-    //             // single cycle high for sending period
-    //             period_ready <= 0;
-    //             theta 
-    //         end
-    //     end
-    // end
-// endmodule
+    logic old_ir_tripped;
+
+    always_ff @(posedge clk_in) begin
+        if (rst_in) begin
+            theta <= 0;
+            period_ready <= 0;
+            period <= 0;
+        end else begin
+            if (ir_tripped & ~old_ir_tripped) begin // ir_tripped went from low to high
+                period_ready <= 1;
+                period <= theta;
+                theta <= 0;
+            end else begin
+                theta <= theta + 1;
+            end
+            if (period_ready) begin
+                // single cycle high for sending period
+                period_ready <= 0;
+            end
+            old_ir_tripped <= ir_tripped;
+        end
+    end
+endmodule
 `default_nettype none
