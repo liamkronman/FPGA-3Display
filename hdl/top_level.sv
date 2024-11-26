@@ -64,7 +64,7 @@ module top_level #(
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
         .data_valid(hub75_data_valid)
-    );  
+    );
 
     always_comb begin
         hub75_addr = col_num1;
