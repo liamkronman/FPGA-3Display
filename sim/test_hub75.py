@@ -8,6 +8,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import Timer, ClockCycles, RisingEdge, FallingEdge, ReadOnly,with_timeout
 from cocotb.utils import get_sim_time as gst
 from cocotb.runner import get_runner
+import numpy as np
 
 
 # import random
@@ -28,6 +29,13 @@ async def test_a(dut):
     dut.rst_in.value = 0
 
     dut.col_index.value = 16
+
+    dut.tvalid.value = 1
+    for i in range(64*9):
+        dut.column_data0[i].value = 1
+        dut.column_data1[i].value = 1
+    await ClockCycles(dut.clk_in,2)
+    dut.tvalid.value = 0
 
         
     await ClockCycles(dut.clk_in,10000)
