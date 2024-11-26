@@ -11,7 +11,7 @@ module hub75_output #(
  (
     input wire rst_in,
     input wire clk_in,
-    //input wire [1:0][NUM_ROWS-1:0][8:0] columns,
+    input wire [1:0][NUM_ROWS-1:0][8:0] columns,
     input wire [$clog2(SCAN_RATE)-1:0] col_index,
     
     output logic [2:0] rgb0,
@@ -40,6 +40,7 @@ module hub75_output #(
         state <= 0;
         pixel_counter <= 0 ;
         clk_msk <= 0;
+        period_counter <= 0;
     end
     else if(state == 0) begin //initing
         led_output_enable <= 1;
@@ -48,6 +49,7 @@ module hub75_output #(
         pixel_counter <= 0;
         led_latch <= 0;
         clk_msk <= 1;
+        period_counter <= 0;
 
 
         
@@ -56,19 +58,19 @@ module hub75_output #(
     else if(state == 1) begin //BCM
 
         led_output_enable <= 1;
-        /*rgb0[0] <= rows[0][pixel_counter][0 + pwm_counter];
+        rgb0[0] <= rows[0][pixel_counter][0 + pwm_counter];
         rgb0[1] <= rows[0][pixel_counter][3 + pwm_counter];
         rgb0[2] <= rows[0][pixel_counter][6 + pwm_counter];
 
         rgb1[0] <= rows[1][pixel_counter][0 + pwm_counter];
         rgb1[1] <= rows[1][pixel_counter][3 + pwm_counter];
-        rgb1[2] <= rows[1][pixel_counter][6 + pwm_counter];*/
-        rgb0[0] <= 1;
+        rgb1[2] <= rows[1][pixel_counter][6 + pwm_counter];
+        /*rgb0[0] <= 1;
         rgb0[1] <= 1; 
         rgb0[2] <= 1;
         rgb1[0] <= 1;
         rgb1[1] <= 1; 
-        rgb1[2] <=1;
+        rgb1[2] <=1;*/
         
         if(pixel_counter == 63 ) begin
             state <= 2;
