@@ -58,7 +58,7 @@ module top_level #(
         .rst_in(sys_rst),
         .mode(2'b01), // hard-coded to SPHERE mode for now
         .theta(theta),
-        .columns([column0, column1]),
+        .columns({column0, column1}),
         .col_num1(col_num1),
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
