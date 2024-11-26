@@ -9,7 +9,7 @@ module detect_to_theta #(
     input wire rst_in,
     output logic [THETA_RES-1:0] theta, // where we currently are in the rotation
     output logic period_ready, // single-cycle high for when new period is ready to be sent
-    output logic [THETA_RES-1:0] period // counter since last time 
+    output logic [THETA_RES-1:0] period // counter since last time IR tripped
 );
     // inspired by evt_counter
 
@@ -22,7 +22,7 @@ module detect_to_theta #(
     // EXTRA CONSIDERATIONS for future:
     //  * Debouncing?
     //  * Is the sensor synchronized with the FPGA clock?
-    //  * period lags behind theta by one revolution
+    //  * period lags behind theta by ~one revolution
 
     logic old_ir_tripped;
 
