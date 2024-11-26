@@ -13,7 +13,7 @@ module frame_manager #(
     input wire clk_in,
     input wire [THETA_RES-1:0] theta, // suppose 8 bit resolution for theta
     input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
-    output logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] columns,
+    output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
     output logic [$clog2(SCAN_RATE):0] col_num2,
     output logic data_valid
@@ -23,9 +23,9 @@ module frame_manager #(
     logic [$clog2(NUM_COLS)-1:0] col_indices; // 1 for if that column is represented at this index, 0 if column isn't represented
                                     // used for scanline optimization
  
-    logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] sphere_cols;
-    logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] cube_cols;
-    logic [1:0][$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] boids_cols;
+    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] sphere_cols;
+    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] cube_cols;
+    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] boids_cols;
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
