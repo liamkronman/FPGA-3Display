@@ -41,13 +41,37 @@ module hub75_output #(
    assign tready = state == 0;
     
    always_comb begin
-    rgb0[0] = column0[0][pixel_counter] ;
-    rgb0[1] = column0[3][pixel_counter];
-    rgb0[2] = column0[6][pixel_counter];
+    if(pwm_counter == 0) begin
 
-    rgb1[0] = column1[0][pixel_counter];
-    rgb1[1] = column1[3][pixel_counter];
-    rgb1[2] = column1[6][pixel_counter];
+        rgb0[0] = column0[0][pixel_counter] ;
+        rgb0[1] = column0[3][pixel_counter];
+        rgb0[2] = column0[6][pixel_counter];
+
+        rgb1[0] = column1[0][pixel_counter];
+        rgb1[1] = column1[3][pixel_counter];
+        rgb1[2] = column1[6][pixel_counter];
+
+
+    end
+    else if(pwm_counter == 1) begin
+        rgb0[0] = column0[1][pixel_counter] ;
+        rgb0[1] = column0[4][pixel_counter];
+        rgb0[2] = column0[7][pixel_counter];
+
+        rgb1[0] = column1[1][pixel_counter];
+        rgb1[1] = column1[4][pixel_counter];
+        rgb1[2] = column1[7][pixel_counter];
+    end
+    else if(pwm_counter == 2) begin
+        rgb0[0] = column0[2][pixel_counter] ;
+        rgb0[1] = column0[5][pixel_counter];
+        rgb0[2] = column0[8][pixel_counter];
+
+        rgb1[0] = column1[2][pixel_counter];
+        rgb1[1] = column1[5][pixel_counter];
+        rgb1[2] = column1[8][pixel_counter];
+    end
+    
 
 
    end
@@ -102,6 +126,10 @@ module hub75_output #(
         if(pwm_counter == 2) begin
             state <= 0;
             
+        end
+        else begin 
+            pwm_counter <= pwm_counter + 1;
+            state <= 1;
         end
     end
 
