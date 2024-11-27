@@ -40,6 +40,10 @@ class Display:
             y = 32 * np.sin(theta) + 32
             self.ax.plot_surface(x, y, z, alpha=0.2)
 
+            # Creates a legend, red for cylindrical, blue for cartesian
+            self.ax.legend(['Cartesian', 'Cylindrical'])
+            self.ax.set_title(f'Cartesian and Cylindrical Coordinates, Angular Resolution {self.angular_resolution}')
+
         plt.show()
 
 

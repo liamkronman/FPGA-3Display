@@ -9,7 +9,7 @@ from cocotb.triggers import Timer, ClockCycles, RisingEdge, FallingEdge, ReadOnl
 from cocotb.utils import get_sim_time as gst
 from cocotb.runner import get_runner
 
-from test_display import Display
+from mock_display import Display
 # import random
 import math
 
