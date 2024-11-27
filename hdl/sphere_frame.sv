@@ -18,8 +18,8 @@ module sphere_frame #(
     // always_comb begin
     //     // Set all rows in both columns to high
     //     for (int y = 0; y < NUM_ROWS; y++) begin
-    //         columns[0][y] = {RGB_RES{1'b1}}; // Set all bits in RGB_RES to 1
-    //         columns[1][y] = {RGB_RES{1'b1}}; // Set all bits in RGB_RES to 1
+    //         columns[0][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
+    //         columns[1][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
     //     end
     // end
 
@@ -28,7 +28,7 @@ module sphere_frame #(
     localparam int CENTER_Y = NUM_ROWS / 2;
 
     logic [NUM_ROWS-1:0][RGB_RES-1:0] column1, column2;
-    logic [$clog2(SCAN_RATE)-1:0] x1, x2, y_offset;
+    logic [$clog2(SCAN_RATE):0] x1, x2, y_offset;
 
     always_comb begin
         for (int y = 0; y < NUM_ROWS; y++) begin
@@ -36,18 +36,41 @@ module sphere_frame #(
             column2[y] = '0;
         end
 
-        // for (int y = 0; y < NUM_ROWS; y++) begin
-        //     x1 = column_index1 - CENTER_X;
-        //     x2 = column_index2 - CENTER_X;
-        //     y_offset = y - CENTER_Y;
+        x1 = CENTER_X - column_index1; // column_index1 < CENTER_X
+        x2 = column_index2 - CENTER_X;
 
-        //     if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-        //         column1[y] = {RGB_RES{1'b1}};
-        //     end
-        //     if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-        //         column2[y] = {RGB_RES{1'b1}};
-        //     end
-        // end
+        for (int y = 0; y < NUM_ROWS/2; y++) begin
+            y_offset = CENTER_Y - y; // CENTER_Y > y
+
+            // if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+            //     column1[y] = {RGB_RES{1'b1}};
+            // end
+            // if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+            //     column2[y] = {RGB_RES{1'b1}};
+            // end
+            if ((x1 + y_offset) <= (RADIUS)) begin
+                column1[y] = {RGB_RES{1'b1}};
+            end
+            if ((x2 + y_offset) <= (RADIUS)) begin
+                column2[y] = {RGB_RES{1'b1}};
+            end
+        end
+        for (int y = NUM_ROWS/2; y < NUM_ROWS; y++) begin
+            y_offset = y - CENTER_Y; // y > CENTER_Y
+
+            // if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+            //     column1[y] = {RGB_RES{1'b1}};
+            // end
+            // if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
+            //     column2[y] = {RGB_RES{1'b1}};
+            // end
+            if ((x1 + y_offset) <= (RADIUS)) begin
+                column1[y] = {RGB_RES{1'b1}};
+            end
+            if ((x2 + y_offset) <= (RADIUS)) begin
+                column2[y] = {RGB_RES{1'b1}};
+            end
+        end
 
         columns[0] = column1;
         columns[1] = column2;

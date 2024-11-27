@@ -40,7 +40,7 @@ module hub75_output #(
 
    assign tready = state == 0;
     
-   /*always_comb begin
+   always_comb begin
     if(pwm_counter == 0) begin
 
         rgb0[0] = column0[pixel_counter][0] ;
@@ -74,7 +74,7 @@ module hub75_output #(
     
 
 
-   end*/
+   end
 
    always_ff @(posedge clk_in) begin
     if(rst_in) begin
@@ -105,13 +105,13 @@ module hub75_output #(
     else if(state == 1) begin //BCM
 
         led_output_enable <= 1;
-        rgb0[0] <=1;
-        rgb0[1] <=1;
-        rgb0[2] <=1;
+        // rgb0[0] <=1;
+        // rgb0[1] <=1;
+        // rgb0[2] <=1;
 
-        rgb1[0] <=1;
-        rgb1[1] <=1;
-        rgb1[2] <=1;
+        // rgb1[0] <=1;
+        // rgb1[1] <=1;
+        // rgb1[2] <=1;
 
 
         
