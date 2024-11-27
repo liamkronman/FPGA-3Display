@@ -12,6 +12,9 @@ class Display:
         self.ax.scatter(x, y, z, color='blue')
 
     def plot_cylindrical(self, r, theta, z):
+        assert theta < self.angular_resolution, "Theta must be less than the angular resolution"
+        assert type(theta) == int, "Theta must be an integer"
+
         r_theta = theta/(self.angular_resolution) * 2 * np.pi + np.pi
 
         x = r * np.cos(r_theta) + 32
