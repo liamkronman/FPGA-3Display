@@ -66,8 +66,13 @@ def plot_fibonacci_spiral(num_points, radius, constrain=False, display=True):
     # max_theta = max(thetas)
 
     if constrain:
-        radii = radii / max_radius * (radius - 1)
+        radii = radii / max_radius * (radius)
         radii = radii.astype(int)
+
+        # turns all radius = radius into radius = radius - 1
+        # weird case, otherwise the spiral will either be one to large
+        # or many too small
+        radii[radii == radius] = radius - 1
 
         # makes thetas a normal distribution up to 2pi
         thetas = np.linspace(0, 2*np.pi, num_points)
@@ -77,7 +82,15 @@ def plot_fibonacci_spiral(num_points, radius, constrain=False, display=True):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='polar')
 
-        ax.scatter(thetas, radii + 0.5)
+        for i in range(num_points):
+            completeness = (i/num_points)
+
+            if completeness > 0.5:
+                color = (completeness * 2 - 1, 0, 0)
+            else:
+                color = (0, 0, completeness * 2)
+
+            ax.scatter(thetas[i], radii[i], color = color)
 
         plt.show()
 
@@ -88,13 +101,15 @@ def main():
 
     radius = 32
     # outer_resolution = 64
-    num_points = 64
+    num_points = 1024
 
-    thetas, radii = plot_fibonacci_spiral(num_points, radius, constrain=True)
+    thetas, radii = plot_fibonacci_spiral(num_points, radius, constrain=True, display=True)
 
-    print(radii )
+    # print(len(thetas))
+    print(len(radii))
+    # print(list(radii) )
 
-    print(thetas*num_points/(2*np.pi))
+    # print(thetas*num_points/(2*np.pi))
 
 
 
