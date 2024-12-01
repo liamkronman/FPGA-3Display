@@ -31,6 +31,7 @@ module detect_to_theta #(
             theta <= 0;
             period_ready <= 0;
             period <= 0;
+            old_ir_tripped <= 0;
         end else begin
             if (ir_tripped & ~old_ir_tripped) begin // ir_tripped went from low to high
                 period_ready <= 1;

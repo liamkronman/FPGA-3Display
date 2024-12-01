@@ -11,7 +11,9 @@ module frame_manager #(
     input wire rst_in,
     input wire [1:0] mode, // mode 0: cylinder, mode 1: sphere, mode 2: cube, mode 3: boids
     input wire clk_in,
-    input wire [THETA_RES-1:0] theta, // suppose 8 bit resolution for theta
+    input wire [THETA_RES-1:0] theta, // where we currently are in the rotation
+    input wire period_ready, // single-cycle high for when new period is ready to be sent
+    input logic [THETA_RES-1:0] period, // counter since last time IR tripped
     input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
@@ -55,6 +57,8 @@ module frame_manager #(
 
     cube_frame cf (
         .theta(theta),
+        .period_ready(period_ready),
+        .period(period),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(cube_cols)
@@ -62,6 +66,8 @@ module frame_manager #(
 
     boids_frame bf (
         .theta(theta),
+        .period_ready(period_ready),
+        .period(period),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(boids_cols)

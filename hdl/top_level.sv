@@ -59,6 +59,8 @@ module top_level #(
         .rst_in(0),
         .mode(2'b01), // hard-coded to SPHERE mode for now
         .theta(theta),
+        .period_ready(period_ready),
+        .period(period),
         .columns({column0, column1}),
         .col_num1(col_num1),
         .col_num2(col_num2),
