@@ -4,15 +4,12 @@ from pathlib import Path
 from cocotb.clock import Clock
 from cocotb.triggers import Timer, ClockCycles, RisingEdge
 from cocotb.runner import get_runner
+from utils import *
+import numpy as np
 
 @cocotb.test()
 async def test_frame_manager(dut):
     """Test frame_manager module in sphere mode."""
-
-    # Parameters
-    NUM_ROWS = 64
-    RGB_RES = 9
-
     # Start clock
     cocotb.start_soon(Clock(dut.clk_in, 83, units="ns").start()) # 83 for 12MHz testing
 
@@ -27,34 +24,44 @@ async def test_frame_manager(dut):
     # Set mode to sphere (2'b01)
     dut.mode.value = 1
 
+    actual_circle = np.zeros(NUM_ROWS**2).reshape(NUM_ROWS, NUM_ROWS)
+
     # Pulse hub75_ready and validate output
-    for cycle in range(10):
+    for col_idx1 in range(SCAN_RATE):
+        col_idx2 = col_idx1 + SCAN_RATE
         # Set hub75_ready high for one cycle
         dut.hub75_ready.value = 1
+        dut.col_num1.value = col_idx1
+        dut.col_num2.value = col_idx2
         await RisingEdge(dut.clk_in)
         dut.hub75_ready.value = 0
 
         # Allow propagation and validate output
         await Timer(1, units="ns")
 
-        for col_idx in range(2):  # Validate both columns
-            for row in range(NUM_ROWS):
-                print(f"col_idx={col_idx}, row={row}")
-                # TODO: this expected value is defined for white square, not sphere!
-                expected_value = 1  # Expected value for sphere_cols
-                flat_index = col_idx * NUM_ROWS + row
-                for rgb_idx in range(RGB_RES):
-                    # Validate the RGB values
-                    actual_value = dut.columns[flat_index*RGB_RES+rgb_idx].value
-                    # assert actual_value == expected_value, (
-                    #     f"Mismatch in sphere mode: col_idx={col_idx}, row={row},rgb_idx={rgb_idx}\n"
-                    #     f"expected={expected_value}, actual={actual_value}"
-                    # )
+        for row in range(NUM_ROWS):
+            expected_column1 = (2**RGB_RES - 1) if (col_idx1 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+            expected_column2 = (2**RGB_RES - 1) if (col_idx2 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+
+
+            actual_column1 = access_index(dut, 0, row)
+            actual_column2 = access_index(dut, 1, row)
+            
+            actual_circle[row][col_idx1] = actual_column1
+            actual_circle[row][col_idx2] = actual_column2
+            
+            print(f"Row {row}: {actual_column1}, {actual_column2}")
+            print(f"Expected: {expected_column1}, {expected_column2}")
+            assert actual_column1 == expected_column1, f"Mismatch for column1 at row {row}, col_idx1={col_idx1}"
+            assert actual_column2 == expected_column2, f"Mismatch for column2 at row {row}, col_idx2={col_idx2}"
 
         # Advance the clock
         await ClockCycles(dut.clk_in, 1)
 
     print("Test passed: frame_manager sphere mode outputs match expected sphere_cols.")
+    # print the actual circle, comma-separated, fully expanded
+    print("Actual circle:")
+    print(np.array2string(actual_circle, separator=", "))
 
 def frame_manager_runner():
     """Runner function for frame_manager testbench."""
@@ -70,7 +77,12 @@ def frame_manager_runner():
     sources += [proj_path / "hdl" / "boids_frame.sv"]
 
     build_test_args = ["-Wall"]
-    parameters = {}
+    parameters = {
+        "NUM_ROWS": NUM_ROWS,
+        "RGB_RES": RGB_RES,
+        "NUM_COLS": NUM_COLS,
+        "SCAN_RATE": SCAN_RATE
+    }
 
     # Initialize the runner
     runner = get_runner(sim)

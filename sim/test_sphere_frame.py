@@ -6,6 +6,7 @@ from pathlib import Path
 from cocotb.runner import get_runner
 import matplotlib.pyplot as plt
 import numpy as np
+from utils import *
 
 # unused but useful for debugging
 def circle_image(image_width, radius):
@@ -19,35 +20,9 @@ def circle_image(image_width, radius):
         circle[i][j] = 1
   return circle
 
-NUM_ROWS = 20
-RGB_RES = 9
-# NUM_ROWS = 6
-# RGB_RES = 1
-NUM_COLS = NUM_ROWS
-SCAN_RATE = NUM_ROWS//2
-
-
-def access_index(dut, col, row):
-    # :params:
-    # dut: cocotb handle
-    # col: int, column index (0 or 1)
-    # row: int, row index
-    # :return:
-    # int, RGB_RES-wide value cast to int
-
-    # dut.columns is RGB_RES x NUM_ROWS x 2 array
-    value = 0
-    for i in range(RGB_RES):
-        value += dut.columns[(col * NUM_ROWS + row) * RGB_RES + i].value << i
-    return value
-
 @cocotb.test()
 async def test_sphere_frame(dut):
     """Test sphere_frame module functionality."""
-    # Parameters for the test
-    RADIUS = SCAN_RATE
-    CENTER_Y = SCAN_RATE
-
     # build up an array which can be plotted for testing
     actual_circle = np.zeros(NUM_ROWS**2).reshape(NUM_ROWS, NUM_ROWS)
 
