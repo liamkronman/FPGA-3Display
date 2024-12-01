@@ -42,34 +42,34 @@ module sphere_frame #(
         for (int y = 0; y < NUM_ROWS/2; y++) begin
             y_offset = CENTER_Y - y; // CENTER_Y > y
 
-            // if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-            //     column1[y] = {RGB_RES{1'b1}};
-            // end
-            // if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-            //     column2[y] = {RGB_RES{1'b1}};
-            // end
-            if ((x1 + y_offset) <= (RADIUS)) begin
+            if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
                 column1[y] = {RGB_RES{1'b1}};
             end
-            if ((x2 + y_offset) <= (RADIUS)) begin
+            if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
                 column2[y] = {RGB_RES{1'b1}};
             end
+            // if ((x1 + y_offset) <= (RADIUS)) begin
+            //     column1[y] = {RGB_RES{1'b1}};
+            // end
+            // if ((x2 + y_offset) <= (RADIUS)) begin
+            //     column2[y] = {RGB_RES{1'b1}};
+            // end
         end
         for (int y = NUM_ROWS/2; y < NUM_ROWS; y++) begin
             y_offset = y - CENTER_Y; // y > CENTER_Y
 
-            // if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-            //     column1[y] = {RGB_RES{1'b1}};
-            // end
-            // if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-            //     column2[y] = {RGB_RES{1'b1}};
-            // end
-            if ((x1 + y_offset) <= (RADIUS)) begin
+            if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
                 column1[y] = {RGB_RES{1'b1}};
             end
-            if ((x2 + y_offset) <= (RADIUS)) begin
+            if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
                 column2[y] = {RGB_RES{1'b1}};
             end
+            // if ((x1 + y_offset) <= (RADIUS)) begin
+            //     column1[y] = {RGB_RES{1'b1}};
+            // end
+            // if ((x2 + y_offset) <= (RADIUS)) begin
+            //     column2[y] = {RGB_RES{1'b1}};
+            // end
         end
 
         columns[0] = column1;
