@@ -1,11 +1,9 @@
-
 `default_nettype none
 module top_level #(
-    parameter ROTATIONAL_RES=180,
+    parameter ROTATIONAL_RES=256,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
-    parameter THETA_RES=27,
     parameter RGB_RES=9
 )
 (
@@ -34,11 +32,9 @@ module top_level #(
     //TODO: Create 20 MHZ clock
     
 
-    logic [THETA_RES-1:0] theta;
-    logic period_ready;
-    logic [THETA_RES-1:0] period;
-    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns;
-
+    logic [$clog2(ROTATIONAL_RES)-1:0] dtheta;
+    logic [$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] column0;
+    logic [$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] column1;
     logic [$clog2(SCAN_RATE)-1:0] col_num1;
     logic [$clog2(SCAN_RATE)-1:0] col_num2;
 
@@ -49,19 +45,15 @@ module top_level #(
         .ir_tripped(ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
-        .theta(theta),
-        .period_ready(period_ready),
-        .period(period)
+        .dtheta(dtheta)
     );
 
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
         .rst_in(0),
         .mode(2'b01), // hard-coded to SPHERE mode for now
-        .theta(theta),
-        .period_ready(period_ready),
-        .period(period),
-        .columns(columns),
+        .dtheta(dtheta),
+        .columns({column0, column1}),
         .col_num1(col_num1),
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
@@ -77,7 +69,8 @@ module top_level #(
         .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .col_index(20),
-        .column_data(columns),
+        .column_data0(column0),
+        .column_data1(column1),
         .tvalid(1),
         .tready(hub75_ready),
 

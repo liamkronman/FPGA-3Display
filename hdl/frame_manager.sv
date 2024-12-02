@@ -1,19 +1,16 @@
 `default_nettype none
 module frame_manager #(
-    parameter ROTATIONAL_RES=180,
+    parameter ROTATIONAL_RES=256,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
-    parameter THETA_RES=27,
     parameter RGB_RES=9
 )
 (
     input wire rst_in,
     input wire [1:0] mode, // mode 0: cylinder, mode 1: sphere, mode 2: cube, mode 3: boids
     input wire clk_in,
-    input wire [THETA_RES-1:0] theta, // where we currently are in the rotation
-    input wire period_ready, // single-cycle high for when new period is ready to be sent
-    input wire [THETA_RES-1:0] period, // counter since last time IR tripped
+    input wire [$clog2(ROTATIONAL_RES)-1:0] dtheta, // where we currently are in the rotation (discretized within [0,ROTATIONAL_RES))
     input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
@@ -31,14 +28,14 @@ module frame_manager #(
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
-    logic [THETA_RES-1:0] old_theta;
+    logic [$clog2(ROTATIONAL_RES)-1:0] old_dtheta;
 
     // intermediate variables used to address off-by-one issue
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
     col_calc cc (
-        .theta(theta),
+        .dtheta(dtheta),
         .col_indices(col_indices) // OUTPUT of cc
     );
 
@@ -56,18 +53,14 @@ module frame_manager #(
     );
 
     cube_frame cf (
-        .theta(theta),
-        .period_ready(period_ready),
-        .period(period),
+        .dtheta(dtheta),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(cube_cols)
     );
 
     boids_frame bf (
-        .theta(theta),
-        .period_ready(period_ready),
-        .period(period),
+        .dtheta(dtheta),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(boids_cols)
@@ -117,7 +110,7 @@ module frame_manager #(
                 // Therefore, data_valid may not necessarily make sense to happen in the same cycle -- even if we can somehow get away with it with the 83.3ns cycle length on 12MHz.
                 data_valid <= 1;
 
-                old_theta <= theta;
+                old_dtheta <= dtheta;
                 old_hub75_ready <= hub75_ready;
             end 
             if (data_valid) begin

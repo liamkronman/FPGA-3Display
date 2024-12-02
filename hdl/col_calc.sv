@@ -1,13 +1,13 @@
 `default_nettype none
 module col_calc #(
-    parameter THETA_RES=27,
+    parameter ROTATIONAL_RES=256,
     parameter NUM_COLS=64 // always a power of 2
 )
 (
-    input wire [THETA_RES-1:0] theta,
+    input wire [$clog2(ROTATIONAL_RES)-1:0] dtheta,
     output logic [NUM_COLS-1:0] col_indices
 );
-    // point of this module: given a theta, tell frame_manager which columns to consider
+    // point of this module: given a dtheta, tell frame_manager which columns to consider
     // ALL LOGIC HERE SHOULD BE COMBINATIONAL
 
     // for the time being, until we do something like simulated annealing, it makes sense to have ALL columns *always* be considered.
