@@ -37,8 +37,8 @@ module top_level #(
     logic [THETA_RES-1:0] theta;
     logic period_ready;
     logic [THETA_RES-1:0] period;
-    logic [$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] column0;
-    logic [$clog2(NUM_ROWS)-1:0][RGB_RES-1:0] column1;
+    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns;
+
     logic [$clog2(SCAN_RATE)-1:0] col_num1;
     logic [$clog2(SCAN_RATE)-1:0] col_num2;
 
@@ -61,7 +61,7 @@ module top_level #(
         .theta(theta),
         .period_ready(period_ready),
         .period(period),
-        .columns({column0, column1}),
+        .columns(columns),
         .col_num1(col_num1),
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
@@ -77,8 +77,7 @@ module top_level #(
         .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .col_index(20),
-        .column_data0(column0),
-        .column_data1(column1),
+        .column_data(columns),
         .tvalid(1),
         .tready(hub75_ready),
 

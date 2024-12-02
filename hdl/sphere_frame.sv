@@ -14,14 +14,16 @@ module sphere_frame #(
     
     // PLAN: approach this mathematically first, and explore BRAM/SRAM if that method starts choking.
 
-    // test: turn all white. doesn't depend on column_index's, but good for demo.
-    // always_comb begin
+    //test: turn all white. doesn't depend on column_index's, but good for demo.
+    /*always_comb begin
     //     // Set all rows in both columns to high
-    //     for (int y = 0; y < NUM_ROWS; y++) begin
-    //         columns[0][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
-    //         columns[1][y] = {RGB_RES{1'b0}}; // Set all bits in RGB_RES to 1
-    //     end
-    // end
+         for (int y = 0; y < NUM_ROWS; y++) begin
+             for (int x = 0; x < RGB_RES; x++) begin
+                columns[0][y][x] = 0; // Set all bits in RGB_RES to 1
+                columns[1][y][x] = 1; // Set all bits in RGB_RES to 1
+            end
+        end'
+    end*/
 
     localparam int RADIUS = NUM_ROWS / 2; // NUM_ROWS == NUM_ROWS for our system
     localparam int CENTER_X = NUM_COLS / 2;
