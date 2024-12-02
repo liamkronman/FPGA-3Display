@@ -13,7 +13,7 @@ module frame_manager #(
     input wire clk_in,
     input wire [THETA_RES-1:0] theta, // where we currently are in the rotation
     input wire period_ready, // single-cycle high for when new period is ready to be sent
-    input logic [THETA_RES-1:0] period, // counter since last time IR tripped
+    input wire [THETA_RES-1:0] period, // counter since last time IR tripped
     input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
