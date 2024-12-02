@@ -48,6 +48,40 @@ module hub75_output #(
 
    end
 
+   always_comb begin
+
+    if(pwm_counter == 0) begin
+
+            rgb0[0] = columns[0][pixel_counter][0];
+            rgb0[1] = columns[0][pixel_counter][3];
+            rgb0[2] = columns[0][pixel_counter][6];
+
+            rgb1[0] = columns[1][pixel_counter][0];
+            rgb1[1] = columns[1][pixel_counter][3];
+            rgb1[2] = columns[1][pixel_counter][6];
+
+
+        end
+        else if(pwm_counter == 1) begin
+            rgb0[0] = columns[0][pixel_counter][1] ;
+            rgb0[1] = columns[0][pixel_counter][4];
+            rgb0[2] = columns[0][pixel_counter][7];
+
+            rgb1[0] = columns[1][pixel_counter][1];
+            rgb1[1] = columns[1][pixel_counter][4];
+            rgb1[2] = columns[1][pixel_counter][7];
+        end
+        else if(pwm_counter == 2) begin
+            rgb0[0] = columns[0][pixel_counter][2] ;
+            rgb0[1] = columns[0][pixel_counter][5];
+            rgb0[2] = columns[0][pixel_counter][8];
+
+            rgb1[0] = columns[1][pixel_counter][2];
+            rgb1[1] = columns[1][pixel_counter][5];
+            rgb1[2] = columns[1][pixel_counter][8];
+        end
+   end
+
    always_ff @(posedge clk_in) begin
     if(rst_in) begin
         state <= 0;
@@ -67,46 +101,12 @@ module hub75_output #(
         if(tvalid) begin
             state <= 1;
             columns <= column_data;
-            //column1 <= column_data1;
         end
-
-
-        
-    
     end
     else if(state == 1) begin //BCM
 
         led_output_enable <= 1;
-        if(pwm_counter == 0) begin
-
-            rgb0[0] <= columns[0][pixel_counter][0];
-            rgb0[1] <= columns[0][pixel_counter][3];
-            rgb0[2] <= columns[0][pixel_counter][6];
-
-            rgb1[0] <= columns[1][pixel_counter][0];
-            rgb1[1] <= columns[1][pixel_counter][3];
-            rgb1[2] <= columns[1][pixel_counter][6];
-
-
-        end
-        else if(pwm_counter == 1) begin
-            rgb0[0] <= columns[0][pixel_counter][1] ;
-            rgb0[1] <= columns[0][pixel_counter][4];
-            rgb0[2] <= columns[0][pixel_counter][7];
-
-            rgb1[0] <= columns[1][pixel_counter][1];
-            rgb1[1] <= columns[1][pixel_counter][4];
-            rgb1[2] <= columns[1][pixel_counter][7];
-        end
-        else if(pwm_counter == 2) begin
-            rgb0[0] <= columns[0][pixel_counter][2] ;
-            rgb0[1] <= columns[0][pixel_counter][5];
-            rgb0[2] <= columns[0][pixel_counter][8];
-
-            rgb1[0] <= columns[1][pixel_counter][2];
-            rgb1[1] <= columns[1][pixel_counter][5];
-            rgb1[2] <= columns[1][pixel_counter][8];
-        end
+        
 
         /*if(pixel_counter[0] & 8'b0000001) begin
             rgb0[0] <= 1;
