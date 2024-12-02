@@ -40,41 +40,6 @@ module hub75_output #(
 
    assign tready = state == 0;
     
-   always_comb begin
-    if(pwm_counter == 0) begin
-
-        rgb0[0] = column0[pixel_counter][0] ;
-        rgb0[1] = column0[pixel_counter][0];
-        rgb0[2] = column0[pixel_counter][0];
-
-        rgb1[0] = column1[pixel_counter][0];
-        rgb1[1] = column1[pixel_counter][0];
-        rgb1[2] = column1[pixel_counter][0];
-
-
-    end
-    else if(pwm_counter == 1) begin
-        rgb0[0] = column0[pixel_counter][0] ;
-        rgb0[1] = column0[pixel_counter][3];
-        rgb0[2] = column0[pixel_counter][6];
-
-        rgb1[0] = column1[pixel_counter][0];
-        rgb1[1] = column1[pixel_counter][3];
-        rgb1[2] = column1[pixel_counter][6];
-    end
-    else if(pwm_counter == 2) begin
-        rgb0[0] = column0[pixel_counter][0] ;
-        rgb0[1] = column0[pixel_counter][3];
-        rgb0[2] = column0[pixel_counter][6];
-
-        rgb1[0] = column1[pixel_counter][0];
-        rgb1[1] = column1[pixel_counter][3];
-        rgb1[2] = column1[pixel_counter][6];
-    end
-    
-
-
-   end
 
    always_ff @(posedge clk_in) begin
     if(rst_in) begin
@@ -105,17 +70,37 @@ module hub75_output #(
     else if(state == 1) begin //BCM
 
         led_output_enable <= 1;
-        // rgb0[0] <=1;
-        // rgb0[1] <=1;
-        // rgb0[2] <=1;
+        if(pwm_counter == 0) begin
 
-        // rgb1[0] <=1;
-        // rgb1[1] <=1;
-        // rgb1[2] <=1;
+            rgb0[0] <= column0[pixel_counter][0] ;
+            rgb0[1] <= column0[pixel_counter][4];
+            rgb0[2] <= column0[pixel_counter][6];
+
+            rgb1[0] <= column1[pixel_counter][0];
+            rgb1[1] <= column1[pixel_counter][3];
+            rgb1[2] <= column1[pixel_counter][6];
 
 
-        
-        
+        end
+        else if(pwm_counter == 1) begin
+            rgb0[0] <= column0[pixel_counter][1] ;
+            rgb0[1] <= column0[pixel_counter][4];
+            rgb0[2] <= column0[pixel_counter][7];
+
+            rgb1[0] <= column1[pixel_counter][1];
+            rgb1[1] <= column1[pixel_counter][4];
+            rgb1[2] <= column1[pixel_counter][7];
+        end
+        else if(pwm_counter == 2) begin
+            rgb0[0] <= column0[pixel_counter][2] ;
+            rgb0[1] <= column0[pixel_counter][5];
+            rgb0[2] <= column0[pixel_counter][8];
+
+            rgb1[0] <= column1[pixel_counter][2];
+            rgb1[1] <= column1[pixel_counter][3];
+            rgb1[2] <= column1[pixel_counter][6];
+        end
+
         if(pixel_counter == 63 ) begin
             state <= 2;
             clk_msk <= 0;
