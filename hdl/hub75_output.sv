@@ -34,7 +34,7 @@ module hub75_output #(
    logic [1:0] pwm_counter; 
 
    logic clk_msk; 
-   logic [1:0][NUM_ROWS-1:0][RGB_RES-1g:0] columns;
+   logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns;
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
 
    assign tready = state == 0;
