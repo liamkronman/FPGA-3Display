@@ -19,6 +19,8 @@ TODO:
 
 3. Create reading logic, should be mostly combinational
 
+4. Chill out and have a beer
+
 
 */
 
@@ -35,13 +37,13 @@ module rot_frame_buffer
     
     input wire new_data,
     input wire [$clog2(DISPLAY_RADIUS)-1:0] radius,
-    input wire [$clog2(DISPLAY_HEIGHT)-1:0] z,
     input wire [$clog2(ROTATIONAL_RES)-1:0] theta_write, // Dual purpose, used for addressing reads and writes
+    input wire [$clog2(DISPLAY_HEIGHT)-1:0] z,
     
     input wire [$clog2(ROTATIONAL_RES)-1:0] theta_read, // Dual purpose, used for addressing reads and writes
 
     output logic busy,
-    output logic row_out,
+    // output logic row_out,
     output logic [1:0][COLUMN_DATA_WIDTH-1:0] columns
 );
 
@@ -62,10 +64,10 @@ module rot_frame_buffer
   // The following is an instantiation template for xilinx_single_port_ram_read_first
   //  Xilinx Single Port Read First RAM
   xilinx_single_port_ram_read_first #(
-    .RAM_WIDTH(COLUMN_DATA_WIDTH + 1),  // Specify RAM data width
+    .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(data.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(rot_frame_buffer_1.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_0_to_pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -80,10 +82,10 @@ module rot_frame_buffer
   // The following is an instantiation template for xilinx_single_port_ram_read_first
   //  Xilinx Single Port Read First RAM
   xilinx_single_port_ram_read_first #(
-    .RAM_WIDTH(COLUMN_DATA_WIDTH + 1),  // Specify RAM data width
+    .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(data.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(rot_frame_buffer_2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_pi_to_2pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -110,7 +112,7 @@ module rot_frame_buffer
     old_column = theta_pipe[1] < ROTATIONAL_RES/2 ? row_1_out : row_2_out;
 
     current_column = 1'b1 << z*DATA_SIZE;
-    current_column[0:$clog2(DISPLAY_RADIUS)-1] = radius;
+    current_column[COLUMN_DATA_WIDTH-1: COLUMN_DATA_WIDTH-$clog2(DISPLAY_RADIUS)] = radius;
 
     if (state == FLUSHING) begin
       wea_1 = 1'b1;
@@ -186,7 +188,7 @@ module rot_frame_buffer
 
           if (write_timer == 1) begin
             
-            new_column <= current_column | old_column[$clog2(DISPLAY_RADIUS):DISPLAY_HEIGHT*DATA_SIZE-1];
+            new_column <= current_column | old_column[DISPLAY_HEIGHT*DATA_SIZE-1:0];
             write_enable <= 1;
             state <= IDLE;
           end
