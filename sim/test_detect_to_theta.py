@@ -9,7 +9,21 @@ from cocotb.triggers import Timer, ClockCycles, RisingEdge, FallingEdge, ReadOnl
 from cocotb.utils import get_sim_time as gst
 from cocotb.runner import get_runner
 
+# LIAM THOUGHTS::::
+# * we have rotational resolution of 256 cross sections
+# * clock runs at 20-100MHz = 50ns-10ns clock period
+# * suppose that the aim is 500-600 RPM = 8.33-10Hz = 120-100ms period
+# * 100ms/50ns to 120ms/10ns = 2M - 12M cycles per revolution
+
+# * clearly, this scale doesn't seem practical to run in simulation
+# * simplification:
+#   * 1024 (+/- 50) clock cycles per revolution = 4 clock cycles per revolution
+#   * still 256 cross sections
+#   * basically, check every 4 clock cycles that dtheta is incrementing
+
+
 async def apply_theta_detection(dut, cycles):
+    # DEPRECATED: based on an old spec for detect_to_theta
     for i in range(cycles):
         await ClockCycles(dut.clk_in, 1)
         print(f"Cycle {i}")
@@ -22,6 +36,22 @@ async def apply_theta_detection(dut, cycles):
     print(f"Period ready: {dut.period_ready.value}")
     assert dut.period_ready.value == 1
     assert dut.period.value == cycles
+
+async def ir_trip_testing(dut, cs_cycles, num_cs):
+    # :params:
+    #   dut: cocotb handle
+    #   cs_cycles: int, number of clock cycles per "cross section"
+    #   num_cs: int, number of cross sections
+    # :return:
+    #   None
+
+    dut.ir_tripped.value = 1
+    await ClockCycles(dut.clk_in, 1)
+    dut.ir_tripped.value = 0
+    await ClockCycles(dut.clk_in, 1)
+    assert dut.dtheta.value == 0
+    await ClockCycles(dut.clk_in, num_cs)
+    
 
 
 @cocotb.test()
