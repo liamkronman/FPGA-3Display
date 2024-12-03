@@ -25,7 +25,7 @@ module sphere_frame #(
         end
     end*/
     
-    localparam int RADIUS = NUM_ROWS / 2; // NUM_ROWS == NUM_ROWS for our system
+    localparam int RADIUS = 32; // NUM_ROWS == NUM_ROWS for our system
     localparam int CENTER_X = NUM_COLS / 2;
     localparam int CENTER_Y = NUM_ROWS / 2;
 
@@ -39,16 +39,16 @@ module sphere_frame #(
         end
 
         x1 = CENTER_X - column_index1; // column_index1 < CENTER_X
-        x2 = column_index2 - CENTER_X;
+        x2 = column_index2 - CENTER_X ;
 
         for (int y = 0; y < NUM_ROWS/2; y++) begin
             y_offset = CENTER_Y - y; // CENTER_Y > y
 
             if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-                column2[y] = {RGB_RES{1'b1}};
+                column1[y] = {RGB_RES{1'b1}};
             end
             if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-                column1[y] = {RGB_RES{1'b1}};
+                column2[y] = {RGB_RES{1'b1}};
             end
             // if ((x1 + y_offset) <= (RADIUS)) begin
             //     column1[y] = {RGB_RES{1'b1}};
@@ -61,10 +61,10 @@ module sphere_frame #(
             y_offset = y - CENTER_Y; // y > CENTER_Y
 
             if ((x1 * x1 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-                column2[y] = {RGB_RES{1'b1}};
+                column1[y] = {RGB_RES{1'b1}};
             end
             if ((x2 * x2 + y_offset * y_offset) <= (RADIUS * RADIUS)) begin
-                column1[y] = {RGB_RES{1'b1}};
+                column2[y] = {RGB_RES{1'b1}};
             end
             // if ((x1 + y_offset) <= (RADIUS)) begin
             //     column1[y] = {RGB_RES{1'b1}};

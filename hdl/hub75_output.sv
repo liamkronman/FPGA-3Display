@@ -45,6 +45,7 @@ module hub75_output #(
     pixel_counter = 0; 
     clk_msk = 0;
     period_counter = 0;
+    tready = 0;
 
    end
 
@@ -88,19 +89,22 @@ module hub75_output #(
         pixel_counter <= 0 ;
         clk_msk <= 0;
         period_counter <= 0;
+
     end
     else if(state == 0) begin //initing
-        led_output_enable <= 1;
         
-        pwm_counter <= 0;
-        pixel_counter <= 0;
-        led_latch <= 0;
-        clk_msk <= 1;
-        period_counter <= 0;
+        
+        
 
         if(tvalid) begin
             state <= 1;
             columns <= column_data;
+            clk_msk <= 1;
+            led_output_enable <= 1;
+            period_counter <= 0;
+            pwm_counter <= 0;
+            pixel_counter <= 0;
+            led_latch <= 0;
         end
     end
     else if(state == 1) begin //BCM

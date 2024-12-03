@@ -100,7 +100,7 @@ module frame_manager #(
                         default: columns <= sphere_cols;
                     endcase
                 end
-                if (col_index_intermediate == SCAN_RATE) begin
+                if (col_index_intermediate + 1 == SCAN_RATE) begin
                     col_index_intermediate <= 0;
                 end else begin
                     col_index_intermediate <= col_index_intermediate + 1;

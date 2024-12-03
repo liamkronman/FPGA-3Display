@@ -45,12 +45,12 @@ module top_level #(
 
     logic hub75_ready;
     logic hub75_data_valid;
-    detect_to_theta dt (
+    /*detect_to_theta dt (
         .ir_tripped(ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
         .dtheta(theta)
-    );
+    );*/
 
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
@@ -67,8 +67,9 @@ module top_level #(
         .data_valid(hub75_data_valid)
     );
 
-    always_comb begin
-        hub75_addr = 31 - col_num1;
+    always_ff @(posedge sysclk) begin
+            hub75_addr <= col_num1;
+
     end
     
 
@@ -77,7 +78,7 @@ module top_level #(
         .rst_in(sys_rst),
         .col_index(20),
         .column_data(columns),
-        .tvalid(1),
+        .tvalid(hub75_data_valid),
         .tready(hub75_ready),
 
         .rgb0(hub75_rgb0),
