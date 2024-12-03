@@ -25,7 +25,7 @@ module sphere_frame #(
         end
     end*/
     
-    localparam int RADIUS = 32; // NUM_ROWS == NUM_ROWS for our system
+    localparam int RADIUS = 20; // NUM_ROWS == NUM_ROWS for our system
     localparam int CENTER_X = NUM_COLS / 2;
     localparam int CENTER_Y = NUM_ROWS / 2;
 
