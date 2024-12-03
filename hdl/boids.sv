@@ -23,7 +23,7 @@ module boids #(
   logic [NUM_BOIDS-1:0] boids_influenced;
   logic [$clog2(NUM_BOIDS)-1:0] boid_id;
 
-  distance_3d #(
+  /*distance_3d #(
     .MAX_DISTANCE(MAX_DISTANCE),
     .RANGE(RANGE)
   ) distance_3d_inst (
@@ -39,7 +39,7 @@ module boids #(
     .distance(distance),
     .data_ready(data_ready),
     .exceeded(exceeded)
-  );
+  );*/
 
 
 
