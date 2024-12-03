@@ -86,7 +86,7 @@ module frame_manager #(
             col_num2 <= 0;
         end else begin
 
-            if (hub75_ready == 1) begin // data just became ready (maybe useless as ready is 1-cycle)
+            if (hub75_ready == 1 && old_hub75_ready == 0) begin // data just became ready (maybe useless as ready is 1-cycle)
                 // col_num1 <= col_num1 + 1;
                 // columns <= sphere_cols;
                 // col_index_intermediate <= col_index_intermediate + 1;
@@ -111,11 +111,12 @@ module frame_manager #(
                 data_valid <= 1;
 
                 old_dtheta <= dtheta;
-                old_hub75_ready <= hub75_ready;
+                
             end 
             if (data_valid) begin
                 data_valid <= 0;
             end
+            old_hub75_ready <= hub75_ready;
         end
     end
 endmodule

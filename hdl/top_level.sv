@@ -75,7 +75,7 @@ module top_level #(
 
     hub75_output hub75 (
         .clk_in(sysclk), // use a different clock?
-        .rst_in(sys_rst),
+        .rst_in(0),
         .col_index(20),
         .column_data(columns),
         .tvalid(hub75_data_valid),

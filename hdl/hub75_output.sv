@@ -93,9 +93,6 @@ module hub75_output #(
     end
     else if(state == 0) begin //initing
         
-        
-        
-
         if(tvalid) begin
             state <= 1;
             columns <= column_data;
