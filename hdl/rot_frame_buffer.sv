@@ -25,7 +25,7 @@ TODO:
 */
 
 module rot_frame_buffer
-#( parameter ROTATIONAL_RES = 32,
+#( parameter ROTATIONAL_RES = 1024,
   parameter DISPLAY_RADIUS = 32,
   parameter DISPLAY_HEIGHT = 64,
   parameter DATA_SIZE = 1,
@@ -44,7 +44,8 @@ module rot_frame_buffer
 
     output logic busy,
     // output logic row_out,
-    output logic [1:0][COLUMN_DATA_WIDTH-1:0] columns
+    output logic [1:0][DISPLAY_HEIGHT*DATA_SIZE-1:0] columns,
+    output logic [1:0][$clog2(DISPLAY_RADIUS)-1:0] radii
 );
 
   logic [COLUMN_DATA_WIDTH-1:0] new_column; // Extra bit to keep state on writes
@@ -67,7 +68,7 @@ module rot_frame_buffer
     .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(rot_frame_buffer_1.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(cube_buffer_1.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_0_to_pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -85,7 +86,7 @@ module rot_frame_buffer
     .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(rot_frame_buffer_2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(cube_buffer_2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_pi_to_2pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -136,8 +137,25 @@ module rot_frame_buffer
       end else begin
         theta = theta_read;
       
-        columns[0] = theta_pipe[1] < ROTATIONAL_RES/2 ? row_1_out : row_2_out;
-        columns[1] = theta_pipe[1] < ROTATIONAL_RES/2 ? row_2_out : row_1_out;
+        if (theta_pipe[1] < ROTATIONAL_RES/2) begin
+          columns[0] = row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
+          columns[1] = row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
+
+          radii[0] = row_1_out[COLUMN_DATA_WIDTH-1: COLUMN_DATA_WIDTH-$clog2(DISPLAY_RADIUS)];
+          radii[1] = row_2_out[COLUMN_DATA_WIDTH-1: COLUMN_DATA_WIDTH-$clog2(DISPLAY_RADIUS)];
+          
+        end else begin
+          columns[0] = row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
+          columns[1] = row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
+          
+          radii[0] = row_2_out[COLUMN_DATA_WIDTH-1: COLUMN_DATA_WIDTH-$clog2(DISPLAY_RADIUS)];
+          radii[1] = row_1_out[COLUMN_DATA_WIDTH-1: COLUMN_DATA_WIDTH-$clog2(DISPLAY_RADIUS)];
+        end
+
+        // columns[0] = theta_pipe[1] < ROTATIONAL_RES/2 ? row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0] : 
+        //                                               row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
+        // columns[1] = theta_pipe[1] < ROTATIONAL_RES/2 ? row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0] :
+                                                      // row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
       end
     end
 
