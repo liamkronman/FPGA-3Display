@@ -15,7 +15,7 @@ import math
 import numpy as np
 
 
-def get_columns(columns):
+def split_bits(columns):
     """
     This function takes a n-bit number and returns the two n//2 numbers
     that make it up
@@ -24,6 +24,44 @@ def get_columns(columns):
     column_1 = columns&((1<<(bits_in_cols//2))-1)
     column_2 = columns>>bits_in_cols//2
     return column_1, column_2
+
+def get_z(column):
+    """
+    Takes a n-bit number, then returns the indices of the bits that are set
+    """
+    z = []
+    col_height = len(column)
+    for i in range(32):
+        if column&(1<<i):
+            z.append(col_height-1-i)
+            
+    return z
+
+
+async def plot_mem_contents(dut):
+
+    cube_display = Display(angular_resolution=512)
+
+    for t in range(512):
+        dut.theta_read.value = t
+        await ClockCycles(dut.clk_in, 2)
+        await FallingEdge(dut.clk_in)
+
+        columns = dut.columns.value
+        radii = dut.radii.value
+        
+        column_1, column_2 = split_bits(columns)
+        radius_1, radius_2 = split_bits(radii)
+
+        cube_display.plot_column(radius_1, t, column_1)
+        cube_display.plot_column(-radius_2, t, column_2)
+
+
+        # print(f"The columns are {column_1} and {column_2}, theta is {t}")
+        # print(f"The radii are {radius_1} and {radius_2}, theta is {t}")
+
+
+    cube_display.show()
 
 
 @cocotb.test()
@@ -38,16 +76,23 @@ async def test_a(dut):
     dut.rst_in.value = 0
 
     test_points = [(random.randint(0, 31), random.randint(0, 31), random.randint(0, 63)) for _ in range(10)]
+    await ClockCycles(dut.clk_in, 2)
+
+    await plot_mem_contents(dut)
+    return
 
     for i in range(32):
         dut.theta_read.value = i
         await ClockCycles(dut.clk_in, 2)
         await FallingEdge(dut.clk_in)
         columns = dut.columns.value
+        radii = dut.radii.value
 
-        column_1, column_2 = get_columns(columns)
+        column_1, column_2 = split_bits(columns)
+        radius_1, radius_2 = split_bits(radii)
 
         print(f"The columns are {column_1} and {column_2}, theta is {i}")
+        print(f"The radii are {radius_1} and {radius_2}, theta is {i}")
 
     for r, theta, z in test_points:
         dut.radius.value = r
@@ -64,10 +109,13 @@ async def test_a(dut):
         dut.theta_read.value = i
         await ClockCycles(dut.clk_in, 2)
         columns = dut.columns.value
+        radii = dut.radii.value
 
-        column_1, column_2 = get_columns(columns)
+        column_1, column_2 = split_bits(columns)
+        radius_1, radius_2 = split_bits(radii)
 
         print(f"The columns are {column_1} and {column_2}, theta is {i}")
+        print(f"The radii are {radius_1} and {radius_2}, theta is {i}")
 
     print("Writing....")
 
