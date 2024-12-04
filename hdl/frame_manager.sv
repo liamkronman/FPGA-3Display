@@ -46,7 +46,14 @@ module frame_manager #(
         col_num2 = col_index+SCAN_RATE;
     end
 
-    sphere_frame sf ( // no need for a theta
+    // sphere_frame sf ( // no need for a theta
+    //     .column_index1(col_index_intermediate),
+    //     .column_index2(col_index_intermediate+SCAN_RATE),
+    //     .columns(sphere_cols)
+    // );
+
+    color_sphere_frame sf (
+        .dtheta(dtheta),
         .column_index1(col_index_intermediate),
         .column_index2(col_index_intermediate+SCAN_RATE),
         .columns(sphere_cols)
