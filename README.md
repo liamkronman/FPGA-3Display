@@ -6,7 +6,7 @@ Final project for MIT 6.2050 Digital Systems Laboratory.
 *jtma, lkronman, nfelleke*
 
 ##  Vivado Compilation and FPGA Programming
-Designed for CMOD-A7 35T FPGA. Compilation done remotely via MIT's [**lab-bc**](https://dspace.mit.edu/handle/1721.1/151412?show=full):
+Designed for CMOD-A7 35T FPGA. Compilation done remotely via MIT's [**lab-bc**](https://dspace.mit.edu/handle/1721.1/151412?show=full) (and on jts computer):
 ```
 git clone https://github.com/liamkronman/FPGA-3Display.git
 cd FPGA-3Display

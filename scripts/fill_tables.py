@@ -63,12 +63,12 @@ def arctan_2_fibonacci_lookup(resolution=64, ranges=32, filepath="./data/arctan2
     # Shift thetas cw by pi/2
     fib_thetas -= np.pi/2
 
+    fib_thetas = fib_thetas[::-1]
+    fib_radii = fib_radii[::-1]
+
     fib_points_cartesian = np.array([fib_radii * np.cos(fib_thetas),
                                      fib_radii * np.sin(fib_thetas)]).T
 
-    # Reverse array
-    fib_points_cartesian = fib_points_cartesian[::-1]
-    
     table = np.zeros((ranges*2, ranges*2), dtype=int)
 
     for x in range(-ranges, ranges):
@@ -82,8 +82,26 @@ def arctan_2_fibonacci_lookup(resolution=64, ranges=32, filepath="./data/arctan2
             for value in row:
                 f.write(f'{value:02x}\n')
 
-    return table
+    return table, fib_thetas, fib_radii
 
+def test_rot_frame_buffer(rotational_res=32, filepath="./data/rot_frame_buffer_2.mem"):
+    """
+    This function creates a lookup table for the rotational frame buffer.
+    The table is a 1D array of size rotational_res.
+    
+    Args:
+    rotational_res: int, the resolution of the lookup table
+    filepath: str, the path to save the lookup table
+    """
+
+    data = [i + rotational_res//2 for i in range(rotational_res//2)]
+
+
+    with open(filepath, 'w') as f:
+        for value in data:
+            f.write(f'{value:02x}\n')
+
+    return data
 
 def distance_2D(resolution=32, ranges=32, filepath="./data/distance_2D.mem"):
     """
@@ -127,9 +145,10 @@ def show_table(array):
 
 def main():
     atan_table = arctan_2_lookup()
-    atan_fib_table = arctan_2_fibonacci_lookup(resolution=1024)
+    atan_fib_table = arctan_2_fibonacci_lookup(resolution=16)
     # distance_origin_table = distance_origin_2D()
-    distance_table = distance_2D()
+    # distance_table = distance_2D()
+    # frame_buffer = test_rot_frame_buffer()
 
     show_table(atan_table)
     # show_table(distance_table)

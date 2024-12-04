@@ -2,6 +2,7 @@
 
 import subprocess
 import shutil
+import argparse
 
 VIVADO_PATH = '/tools/Xilinx/Vivado/2024.1/bin/vivado'
 HAS_VIVADO = shutil.which(VIVADO_PATH) is not None
@@ -12,6 +13,13 @@ LAB_COMPILE = ['lab-bc run ./ obj']
 TABLE_COMMANDS = ['./scripts/fill_tables.py']
 
 def main():
+
+    parser = argparse.ArgumentParser(description='Build script for FPGA project')
+    parser.add_argument('-r', type=int, help='Resolution parameter')
+
+    # Parse arguments
+    args = parser.parse_args()
+    resolution = args.r if args.r else 64
 
     # creates the /log and /obj directories
     subprocess.run('mkdir -p log obj', shell=True)

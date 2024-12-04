@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from bitarray import bitarray 
 
 
 class Display:
@@ -7,6 +8,16 @@ class Display:
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
         self.angular_resolution = angular_resolution
+
+    def get_z(self, column):
+
+        z = []
+        bits = bitarray(bin(column)[2:].zfill(64))
+        # print(bits)
+        for i in range(64):
+            if bits[i]:
+                z.append(63-i)
+        return z
 
     def plot_cartesian(self, x, y, z):
         self.ax.scatter(x, y, z, color='blue')
@@ -22,6 +33,21 @@ class Display:
 
         # plot the points in a red color
         self.ax.scatter(x, y, z, color='red')
+
+    def plot_column(self, r, theta, z):
+        assert theta < self.angular_resolution, "Theta must be less than the angular resolution"
+        assert type(theta) == int, "Theta must be an integer"
+
+        r_theta = theta/(self.angular_resolution) * 2 * np.pi + np.pi
+
+        x = r * np.cos(r_theta) + 32
+        y = r * np.sin(r_theta) + 32
+
+        zs = self.get_z(z)
+
+        # plot the points in a red color
+        for z_val in zs:
+            self.ax.scatter(x, y, z_val, color='red')
 
     def show(self, show_cylinder=True):
         self.ax.set_xlim(0, 64)
