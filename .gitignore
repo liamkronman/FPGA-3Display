@@ -6,3 +6,4 @@ sim/__pycache__/
 _history/
 *.out
 */*.out
+a.out

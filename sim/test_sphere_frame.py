@@ -38,8 +38,8 @@ async def test_sphere_frame(dut):
         
         # Validate column1 and column2
         for row in range(NUM_ROWS):
-            expected_column1 = (2**RGB_RES - 1) if (col_idx1 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
-            expected_column2 = (2**RGB_RES - 1) if (col_idx2 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+            expected_column1 = (2**RGB_RES - 1) if (col_idx1 - CENTER_X)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
+            expected_column2 = (2**RGB_RES - 1) if (col_idx2 - CENTER_X)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
 
 
             actual_column1 = access_index(dut, 0, row)

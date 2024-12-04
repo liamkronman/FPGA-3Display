@@ -4,7 +4,8 @@ RGB_RES = 9
 # RGB_RES = 1
 NUM_COLS = NUM_ROWS
 SCAN_RATE = NUM_ROWS//2
-RADIUS = SCAN_RATE
+RADIUS = 20
+CENTER_X = SCAN_RATE
 CENTER_Y = SCAN_RATE
 
 def access_index(dut, col_idx, row):
