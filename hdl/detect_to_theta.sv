@@ -2,7 +2,7 @@
 `default_nettype none
 module detect_to_theta #(
     parameter THETA_RES=27,
-    parameter ROTATIONAL_RES=256
+    parameter ROTATIONAL_RES=1024
 )
 (
     input wire ir_tripped,
