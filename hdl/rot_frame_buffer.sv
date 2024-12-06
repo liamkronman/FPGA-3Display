@@ -135,8 +135,12 @@ module rot_frame_buffer
         columns[1] = 0;
       end else begin
         theta = theta_read;
-      
-        if (theta_pipe[1] < ROTATIONAL_RES/2) begin
+
+        if (state == WAIT) begin
+          columns[0] = 0;
+          columns[1] = 0;
+          
+        end else if (theta_pipe[1] < ROTATIONAL_RES/2) begin
           columns[0] = row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
           columns[1] = row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
 
@@ -158,24 +162,6 @@ module rot_frame_buffer
       end
     end
 
-    
-    case (state)
-      IDLE: begin
-        
-      end
-      FLUSHING: begin
-        
-      end
-      WRITING: begin
-        
-      end  
-      WAIT: begin
-        
-      end
-
-
-    endcase
-    
     
     // addr_theta = theta > ROTATIONAL_RES/2 ? theta - ROTATIONAL_RES/2 : theta;
     if (theta > ROTATIONAL_RES/2) begin
@@ -216,7 +202,8 @@ module rot_frame_buffer
           flush_theta <= flush_theta + 1;
 
           if (flush_theta == ROTATIONAL_RES/2 -1) begin
-            state <= IDLE;
+            timer <= 0;
+            state <= WAIT;
           end
         end
         WRITING: begin
@@ -228,16 +215,20 @@ module rot_frame_buffer
             new_column <= current_column | old_column[DISPLAY_HEIGHT*DATA_SIZE-1:0];
             write_enable <= 1;
             timer <= 0;
-            state <= IDLE;
+            state <= WAIT;
           end
 
         end
-        // WAIT: begin
+        WAIT: begin
 
-        //   timer <= timer + 1;
-        //   write_enable <= 0;
+          timer <= timer + 1;
+          write_enable <= 0;
+
+          if (timer == 1) begin
+            state <= IDLE;
+          end
           
-        // end
+        end
       endcase
     end
   end
