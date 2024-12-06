@@ -25,6 +25,7 @@ module frame_manager #(
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] sphere_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] cube_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] boids_cols;
+    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] rfb_cols;
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
@@ -33,6 +34,8 @@ module frame_manager #(
     // intermediate variables used to address off-by-one issue
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
+
+    logic rfb_busy; 
 
     col_calc cc (
         .dtheta(dtheta),
@@ -59,18 +62,32 @@ module frame_manager #(
         .columns(sphere_cols)
     );
 
-    cube_frame cf (
+    /*cube_frame cf (
         .dtheta(dtheta),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(cube_cols)
-    );
+    );*/
 
     boids_frame bf (
         .dtheta(dtheta),
         .column_index1(intermediate_col_num1),
         .column_index2(intermediate_col_num2),
         .columns(boids_cols)
+    );
+
+    rot_frame_buffer rfb (
+        .rst_in(rst_in),
+        .clk_in(clk_in),
+        .flush(0),
+        .new_data(0),
+        .radius(),
+        .z(0),
+        .theta_write(0),
+        .theta_read(dtheta),
+        .busy(rfb_busy),
+        .columns(cube_cols)
+
     );
 
     logic old_hub75_ready;
@@ -104,6 +121,7 @@ module frame_manager #(
                         2'b01: columns <= sphere_cols; // sphere mode
                         2'b10: columns <= cube_cols; // cube mode
                         2'b11: columns <= boids_cols; // boids mode
+
                         default: columns <= sphere_cols;
                     endcase
                 end

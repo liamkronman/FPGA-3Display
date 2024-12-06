@@ -43,6 +43,7 @@ module rot_frame_buffer
     input wire [$clog2(ROTATIONAL_RES)-1:0] theta_read, // Dual purpose, used for addressing reads and writes
 
     output logic busy,
+    output logic data_ready,
     // output logic row_out,
     output logic [1:0][DISPLAY_HEIGHT*DATA_SIZE-1:0] columns,
     output logic [1:0][$clog2(DISPLAY_RADIUS)-1:0] radii
