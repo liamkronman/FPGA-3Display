@@ -122,8 +122,6 @@ module rot_frame_buffer
 
       theta = flush_theta;
 
-      new_column = 0;
-
       columns[0] = 0;
       columns[1] = 0;
     end else begin
@@ -205,6 +203,7 @@ module rot_frame_buffer
           if (flush) begin
             state <= FLUSHING;
             flush_theta <= 0;
+            new_column <= 0;
 
           end else if (new_data) begin
             state <= WRITING;
