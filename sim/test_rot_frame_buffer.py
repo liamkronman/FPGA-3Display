@@ -9,10 +9,17 @@ from cocotb.triggers import Timer, ClockCycles, RisingEdge, FallingEdge, ReadOnl
 from cocotb.utils import get_sim_time as gst
 from cocotb.runner import get_runner
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts')))
+
+
+
 from mock_display import Display
+from cube_points import create_cube, project_fibonacci_points
+
 import random
 import math
 import numpy as np
+
 
 ANGULAR_RESOLUTION = 1024
 
@@ -64,8 +71,46 @@ async def plot_mem_contents(dut):
         # print(f"The radii are {radius_1} and {radius_2}, theta is {t}")
 
 
-    cube_display.show()
+    return cube_display
 
+async def flush_mem_contents(dut):
+    dut.flush.value = 1
+    await ClockCycles(dut.clk_in, 1)
+    dut.flush.value = 0
+    # await FallingEdge(dut.busy)
+    await with_timeout( FallingEdge(dut.busy), 2000, 'ms')
+
+
+    # for t in range(ANGULAR_RESOLUTION):
+    #     dut.theta_read.value = t
+    #     await ClockCycles(dut.clk_in, 2)
+    #     await FallingEdge(dut.clk_in)
+
+    #     columns = dut.columns.value
+    #     radii = dut.radii.value
+        
+    #     column_1, column_2 = split_bits(columns)
+    #     radius_1, radius_2 = split_bits(radii)
+
+    #     print(f"The columns are {column_1} and {column_2}, theta is {t}")
+    #     print(f"The radii are {radius_1} and {radius_2}, theta is {t}")
+    return
+
+async def write_mem_contents(dut, test_points):
+    dut.new_data.value = 1
+
+    for r, theta, z in test_points:
+        print(int(z))
+        dut.radius.value = int(r)
+        dut.theta_write.value = int(theta)
+        dut.z.value = int(z)
+
+        await ClockCycles(dut.clk_in, 4)
+
+    dut.new_data.value = 0
+
+    await with_timeout( FallingEdge(dut.busy), 2000, 'ms')
+    return
 
 @cocotb.test()
 async def test_a(dut):
@@ -78,10 +123,26 @@ async def test_a(dut):
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
 
-    test_points = [(random.randint(0, 31), random.randint(0, 31), random.randint(0, 63)) for _ in range(10)]
+    # test_points = [(random.randint(0, 31), random.randint(0, 31), random.randint(0, 63)) for _ in range(10)]
+    test_points = create_cube()
+    test_points = project_fibonacci_points(test_points, resolution=ANGULAR_RESOLUTION)
+
     await ClockCycles(dut.clk_in, 2)
 
-    await plot_mem_contents(dut)
+    display_1 = await plot_mem_contents(dut)
+
+    await flush_mem_contents(dut)
+
+    display_2 = await plot_mem_contents(dut)
+
+    await write_mem_contents(dut, test_points)
+
+    display_3 = await plot_mem_contents(dut)
+
+    display_1.show()
+    display_2.show()
+    display_3.show()
+
     return
 
     for i in range(32):
