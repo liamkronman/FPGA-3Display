@@ -3,6 +3,7 @@ log/
 obj/
 sim_build/
 sim/__pycache__/
+scripts/__pycache__/
 _history/
 *.out
 */*.out
