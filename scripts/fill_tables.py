@@ -144,15 +144,15 @@ def show_table(array):
 
 
 def main():
-    atan_table = arctan_2_lookup()
-    atan_fib_table = arctan_2_fibonacci_lookup(resolution=16)
+    # atan_table = arctan_2_lookup()
+    atan_fib_table, _, _ = arctan_2_fibonacci_lookup(resolution=64)
     # distance_origin_table = distance_origin_2D()
-    # distance_table = distance_2D()
+    distance_table = distance_2D()
     # frame_buffer = test_rot_frame_buffer()
 
-    show_table(atan_table)
-    # show_table(distance_table)
+    # show_table(atan_table)
     show_table(atan_fib_table)
+    # show_table(distance_table)
 
 if __name__ == '__main__':
     main()

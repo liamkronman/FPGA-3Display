@@ -142,7 +142,7 @@ def main():
     # cube = plot_cube()
 
     # print(len(cube))
-    create_cube_fibonnacci_table()
+    create_cube_fibonnacci_table(1024)
 
 if __name__ == "__main__":
     main()

@@ -90,6 +90,7 @@ def plot_fibonacci_spiral(num_points, radius, constrain=False, display=True):
             else:
                 color = (0, 0, completeness * 2)
 
+            # ax.scatter(thetas[i], radii[i], color = (completeness, 0, 1-completeness))
             ax.scatter(thetas[i], radii[i], color = color)
 
         plt.show()
