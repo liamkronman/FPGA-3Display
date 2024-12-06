@@ -102,7 +102,7 @@ module rot_frame_buffer
   logic wea_1;
   logic wea_2;
   
-  typedef enum { IDLE, FLUSHING, WRITING } buffer_state;
+  typedef enum { IDLE, FLUSHING, WRITING, WAIT } buffer_state;
   
   buffer_state state;
   logic [COLUMN_DATA_WIDTH-1:0] old_column;
@@ -159,6 +159,25 @@ module rot_frame_buffer
       end
     end
 
+    
+    case (state)
+      IDLE: begin
+        
+      end
+      FLUSHING: begin
+        
+      end
+      WRITING: begin
+        
+      end  
+      WAIT: begin
+        
+      end
+
+
+    endcase
+    
+    
     // addr_theta = theta > ROTATIONAL_RES/2 ? theta - ROTATIONAL_RES/2 : theta;
     if (theta > ROTATIONAL_RES/2) begin
       addr_theta = theta - ROTATIONAL_RES/2;
@@ -167,7 +186,7 @@ module rot_frame_buffer
     end
 
   end
-  logic write_timer;
+  logic timer;
 
   always_ff @(posedge clk_in) begin
     if (rst_in) begin
@@ -188,7 +207,7 @@ module rot_frame_buffer
 
           end else if (new_data) begin
             state <= WRITING;
-            write_timer <= 0;
+            timer <= 0;
 
           end
         end
@@ -202,16 +221,23 @@ module rot_frame_buffer
         end
         WRITING: begin
 
-          write_timer <= write_timer + 1;
+          timer <= timer + 1;
 
-          if (write_timer == 1) begin
+          if (timer == 1) begin
             
             new_column <= current_column | old_column[DISPLAY_HEIGHT*DATA_SIZE-1:0];
             write_enable <= 1;
+            timer <= 0;
             state <= IDLE;
           end
 
         end
+        // WAIT: begin
+
+        //   timer <= timer + 1;
+        //   write_enable <= 0;
+          
+        // end
       endcase
     end
   end
