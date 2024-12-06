@@ -14,6 +14,8 @@ import random
 import math
 import numpy as np
 
+ANGULAR_RESOLUTION = 1024
+
 
 def split_bits(columns):
     """
@@ -40,9 +42,10 @@ def get_z(column):
 
 async def plot_mem_contents(dut):
 
-    cube_display = Display(angular_resolution=512)
 
-    for t in range(512):
+    cube_display = Display(angular_resolution=ANGULAR_RESOLUTION)
+
+    for t in range(ANGULAR_RESOLUTION):
         dut.theta_read.value = t
         await ClockCycles(dut.clk_in, 2)
         await FallingEdge(dut.clk_in)
@@ -139,7 +142,7 @@ def is_runner():
     sources = [proj_path / "hdl" / "rot_frame_buffer.sv"]
     sources += [proj_path / "hdl" / "xilinx_single_port_ram_read_first.sv"]
     build_test_args = ["-Wall"]
-    parameters = {}
+    parameters = {"ROTATIONAL_RES": ANGULAR_RESOLUTION}
     sys.path.append(str(proj_path / "sim"))
     runner = get_runner(sim)
     runner.build(
