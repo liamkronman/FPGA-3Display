@@ -27,7 +27,7 @@ module top_level #(
     
     BUFG sys_clk_buf
    (.O (clk_12mhz_passthrough),
-    .I (sysclk));
+    .I (clk_12mhz));
     clk_wiz clock_wizard
     (.sysclk(clk_12mhz_passthrough),
     .clk_100mhz(clk_100mhz),
@@ -37,7 +37,7 @@ module top_level #(
     logic sysclk;
     logic sys_rst;
 
-    assign sysclk = clk_24mhz;
+    assign sysclk = clk_12mhz;
 
     assign sys_rst = btn[0];
     // tie led0 to ir_led_control and led1 to low
