@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from distribute_points import plot_fibonacci_spiral
+from sphere_points import generate_voxel_sphere
 
 def arctan_2_lookup(resolution=64, ranges=32, filepath="./data/arctan2.mem"):
     """
@@ -36,7 +37,7 @@ def arctan_2_lookup(resolution=64, ranges=32, filepath="./data/arctan2.mem"):
 
     return table
 
-def arctan_2_fibonacci_lookup(resolution=64, ranges=32, filepath="./data/arctan2_fibonacci.mem"):
+def arctan_2_fibonacci_lookup(resolution=64, ranges=32, filepath="./data/arctan2_fibonacci.mem", write=True):
     """
     This function creates a lookup table for the arctan2 function. This is
     different than a normal arctan2 lookup table in that it uses a fibonacci
@@ -77,10 +78,11 @@ def arctan_2_fibonacci_lookup(resolution=64, ranges=32, filepath="./data/arctan2
             # table[x+ranges][y+ranges] = int((closest_index) * (resolution-1) / 64) # WHY WOULD IT GENERATE THIS???
             table[x+ranges][y+ranges] = closest_index
 
-    with open(filepath, 'w') as f:
-        for row in table:
-            for value in row:
-                f.write(f'{value:02x}\n')
+    if write:
+        with open(filepath, 'w') as f:
+            for row in table:
+                for value in row:
+                    f.write(f'{value:02x}\n')
 
     return table, fib_thetas, fib_radii
 
@@ -133,6 +135,21 @@ def distance_2D(resolution=32, ranges=32, filepath="./data/distance_2D.mem"):
                 f.write(f'{value:02x}\n')
     return table
 
+def create_sphere_table(radius=4, filepath="./data/sphere_points.mem"):
+    """
+    This function creates a lookup table for the sphere points.
+    """
+
+    sphere_points = generate_voxel_sphere(radius)
+
+    # table = np.zeros((resolution, resolution), dtype=int)
+
+    with open(filepath, 'w') as f:
+        for point in sphere_points:
+            x, y, z = point
+            f.write(f'{x:06b}{y:06b}{z:06b}\n')
+
+    return sphere_points
 
 def show_table(array):
 
@@ -145,7 +162,7 @@ def show_table(array):
 
 def main():
     # atan_table = arctan_2_lookup()
-    atan_fib_table, _, _ = arctan_2_fibonacci_lookup(resolution=64)
+    atan_fib_table, _, _ = arctan_2_fibonacci_lookup(resolution=1024)
     # distance_origin_table = distance_origin_2D()
     distance_table = distance_2D()
     # frame_buffer = test_rot_frame_buffer()
