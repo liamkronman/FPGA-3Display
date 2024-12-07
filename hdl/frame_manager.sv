@@ -35,6 +35,8 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
+    logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
+
     logic rfb_busy; 
 
     col_calc cc (

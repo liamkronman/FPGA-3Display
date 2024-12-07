@@ -1,7 +1,7 @@
 
 `default_nettype none
 module hub75_output #(
-    parameter ROTATIONAL_RES=180,
+    parameter ROTATIONAL_RES=1024,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
@@ -28,8 +28,9 @@ module hub75_output #(
     output logic         tready
 );
 
-   logic [7:0] pixel_counter;
-   logic [10:0] period_counter;
+   logic [$clog2(NUM_COLS)-1:0] pixel_counter;
+   logic 
+   logic [$clog2(ROTATIONAL_RES)-1:0] period_counter;
    logic [2:0] state;
    logic [1:0] pwm_counter; 
 
@@ -140,25 +141,20 @@ module hub75_output #(
     end
     else if(state == 2) begin //WAITING PERIOID
     
-    led_latch <= 0;
+        led_latch <= 0;
 
-    period_counter <= period_counter+ 1;
-    if(period_counter == PERIOD * (pwm_counter + 1) - 1 ) begin
-        period_counter <= 0;
-        if(pwm_counter == 2) begin
-            state <= 0;
-            
+        period_counter <= period_counter+ 1;
+        if(period_counter == PERIOD * (pwm_counter + 1) - 1 ) begin
+            period_counter <= 0;
+            if(pwm_counter == 2) begin
+                state <= 0;
+                
+            end
+            else begin 
+                pwm_counter <= pwm_counter + 1;
+                state <= 1;
+            end
         end
-        else begin 
-            pwm_counter <= pwm_counter + 1;
-            state <= 1;
-        end
-    end
-
-    
-
-
-
     end
 
    end
