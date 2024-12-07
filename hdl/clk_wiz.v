@@ -79,7 +79,7 @@ module clk_wiz
  );
   // Input buffering
   //------------------------------------
-wire sysclk_cw
+wire sysclk_cw;
 wire clk_in2_cw;
   IBUF clkin1_ibufg
    (.O (sysclk_cw),
@@ -95,8 +95,8 @@ wire clk_in2_cw;
   //    * Unused inputs are tied off
   //    * Unused outputs are labeled unused
 
-  wire        clk_pixel_cw;
-  wire        clk_tmds_cw;
+  wire        clk_100mhz_cw;
+  wire        clk_24mhz_cw;
   wire        clk_out3_cw;
   wire        clk_out4_cw;
   wire        clk_out5_cw;

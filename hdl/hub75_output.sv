@@ -29,7 +29,6 @@ module hub75_output #(
 );
 
    logic [$clog2(NUM_COLS)-1:0] pixel_counter;
-   logic 
    logic [$clog2(ROTATIONAL_RES)-1:0] period_counter;
    logic [2:0] state;
    logic [1:0] pwm_counter; 

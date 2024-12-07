@@ -21,8 +21,9 @@ module top_level #(
 );
     logic clk_100mhz;
     logic clk_24mhz;
+    logic sysclk_passthrough;
     clk_wiz clock_wizard
-    (.sysclk(sysclk),
+    (.sysclk(sysclk_passthrough),
     .clk_100mhz(clk_100mhz),
     .clk_24mhz(clk_24mhz),
     .reset(0));
