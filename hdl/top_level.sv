@@ -19,6 +19,14 @@ module top_level #(
     output logic hub75_clk,
     input wire [1:0] btn
 );
+    logic clk_100mhz;
+    logic clk_24mhz;
+    clk_wiz clock_wizard
+    (.sysclk(sysclk),
+    .clk_100mhz(clk_100mhz),
+    .clk_24mhz(clk_24mhz),
+    .reset(0));
+
     logic sys_rst;
     assign sys_rst = btn[0];
     // tie led0 to ir_led_control and led1 to low
