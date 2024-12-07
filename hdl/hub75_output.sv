@@ -12,7 +12,7 @@ module hub75_output #(
  (
     input wire rst_in,
     input wire clk_in,
-    input wire 
+    //TODO: add second clk and change module to take multiple clocks
     input wire [1:0][NUM_ROWS-1:0][RGB_RES-1:0] column_data,
     //input wire [NUM_ROWS-1:0][RGB_RES:0] column_data1,
     input wire [$clog2(SCAN_RATE)-1:0] col_index,
