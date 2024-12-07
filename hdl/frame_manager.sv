@@ -35,8 +35,9 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
+    logic [1:0][$clog2(SCAN_RATE)-1:0] rfb_radii;
     logic [$clog2(SCAN_RATE)-1:0] rfb_radius;
-
+    assign rfb_radius = rfb_radii[0];
     logic rfb_busy; 
 
     col_calc cc (
@@ -95,7 +96,7 @@ module frame_manager #(
         .clk_in(clk_in),
         .flush(0),
         .new_data(0),
-        .radius(rfb_radius),
+        .radius(rfb_radii),
         .z(0),
         .theta_write(0),
         .theta_read(dtheta),

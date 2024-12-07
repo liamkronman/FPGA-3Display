@@ -19,18 +19,22 @@ module top_level #(
     output logic hub75_clk,
     input wire [1:0] btn
 );
+
+    //Handling creating and assigning different clocks
     logic clk_100mhz;
     logic clk_24mhz;
     logic clk_12mhz_passthrough;
+    
     BUFG sys_clk_buf
    (.O (clk_12mhz_passthrough),
     .I (sysclk));
     clk_wiz clock_wizard
-    (.sysclk(sysclk_passthrough),
+    (.sysclk(clk_12mhz_passthrough),
     .clk_100mhz(clk_100mhz),
     .clk_24mhz(clk_24mhz),
     .reset(0));
 
+    logic sysclk;
     logic sys_rst;
 
     assign sysclk = clk_24mhz;
