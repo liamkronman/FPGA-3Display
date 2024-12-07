@@ -8,7 +8,7 @@ module top_level #(
     parameter RGB_RES=9
 )
 (
-    input wire sysclk, // 12MHz clock (from CMOD A7)
+    input wire clk_12mhz, // 12MHz clock (from CMOD A7)
     input wire ir_tripped, // PMOD pin 1
     output logic [1:0] led, // LED outputs,
     output logic [4:0] hub75_addr,
@@ -21,7 +21,10 @@ module top_level #(
 );
     logic clk_100mhz;
     logic clk_24mhz;
-    logic sysclk_passthrough;
+    logic clk_12mhz_passthrough;
+    BUFG sys_clk_buf
+   (.O (clk_12mhz_passthrough),
+    .I (sysclk));
     clk_wiz clock_wizard
     (.sysclk(sysclk_passthrough),
     .clk_100mhz(clk_100mhz),
@@ -29,6 +32,9 @@ module top_level #(
     .reset(0));
 
     logic sys_rst;
+
+    assign sysclk = clk_24mhz;
+
     assign sys_rst = btn[0];
     // tie led0 to ir_led_control and led1 to low
     ir_led_control ilc(
