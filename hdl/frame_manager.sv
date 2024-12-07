@@ -35,7 +35,7 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
-    logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
+    logic [$clog2(SCAN_RATE)-1:0] rfb_radius;
 
     logic rfb_busy; 
 
@@ -45,10 +45,22 @@ module frame_manager #(
     );
 
     always_comb begin
-        intermediate_col_num1 = col_index_intermediate;
-        intermediate_col_num2 = col_index_intermediate+SCAN_RATE;
+        
+        
         // col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
+        
+
+        if(mode == 2'b10 ) begin //if in sphere mode
+            intermediate_col_num1 = rfb_radius;
+
+
+        end
+        else begin
+            intermediate_col_num1 = col_index_intermediate;
+
+        end
+        intermediate_col_num2 = intermediate_col_num1+SCAN_RATE;
     end
 
     // sphere_frame sf ( // no need for a theta
@@ -83,7 +95,7 @@ module frame_manager #(
         .clk_in(clk_in),
         .flush(0),
         .new_data(0),
-        .radius(),
+        .radius(rfb_radius),
         .z(0),
         .theta_write(0),
         .theta_read(dtheta),
@@ -116,8 +128,8 @@ module frame_manager #(
                 // col_num1 <= col_num1 + 1;
                 // columns <= sphere_cols;
                 // col_index_intermediate <= col_index_intermediate + 1;
-                if (col_indices[col_index_intermediate]) begin // iterates over 32 cycles
-                    col_num1 <= col_index_intermediate;
+                if (col_indices[intermediate_col_num1]) begin // iterates over 32 cycles
+                    col_num1 <= intermediate_col_num1;
                     case (mode)
                         2'b00: columns <= 0; // cylinder mode (TODO: FIX)
                         2'b01: columns <= sphere_cols; // sphere mode
