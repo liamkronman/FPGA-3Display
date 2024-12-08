@@ -146,9 +146,9 @@ wire clk_in2_cw;
    (
     .CLKFBOUT            (clkfbout_cw),
     .CLKFBOUTB           (clkfboutb_unused),
-    .CLKOUT0             (clk_pixel_cw),
+    .CLKOUT0             (clk_100mhz_cw),
     .CLKOUT0B            (clkout0b_unused),
-    .CLKOUT1             (clk_tmds_cw),
+    .CLKOUT1             (clk_24mhz_cw),
     .CLKOUT1B            (clkout1b_unused),
     .CLKOUT2             (clkout2_unused),
     .CLKOUT2B            (clkout2b_unused),
