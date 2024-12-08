@@ -15,7 +15,7 @@ async def test_frame_manager(dut):
 
     # Reset DUT
     dut.rst_in.value = 1
-    dut.mode.value = 0  # Initial mode
+    dut.mode.value = 2  # Initial mode
     dut.hub75_ready.value = 0
     dut.theta.value = 0
     await ClockCycles(dut.clk_in, 5)
@@ -75,7 +75,10 @@ def frame_manager_runner():
     sources += [proj_path / "hdl" / "sphere_frame.sv"]
     sources += [proj_path / "hdl" / "cube_frame.sv"]
     sources += [proj_path / "hdl" / "boids_frame.sv"]
-
+    sources += [proj_path / "hdl" / "color_sphere_frame.sv"]
+    sources += [proj_path/"hdl"/"rot_frame_buffer.sv"]
+    sources += [proj_path / "hdl" / "xilinx_single_port_ram_read_first.sv"]
+    sources += [proj_path / "hdl" / "xilinx_true_dual_port_read_first_2_clock_ram.v"]
     build_test_args = ["-Wall"]
     parameters = {
         "NUM_ROWS": NUM_ROWS,

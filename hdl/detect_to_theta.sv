@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `default_nettype none
 module detect_to_theta #(
-    parameter THETA_RES=32,
+    parameter THETA_RES=64,
     parameter ROTATIONAL_RES=1024
 )
 (
