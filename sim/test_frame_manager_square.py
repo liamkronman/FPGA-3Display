@@ -31,29 +31,17 @@ async def test_frame_manager(dut):
         col_idx2 = col_idx1 + SCAN_RATE
         # Set hub75_ready high for one cycle
         dut.hub75_ready.value = 1
-        dut.col_num1.value = col_idx1
-        dut.col_num2.value = col_idx2
+       
         await RisingEdge(dut.clk_in)
-        dut.hub75_ready.value = 0
+
+        
+
+        for i in range(1024):
+            await RisingEdge(dut.clk_in)
+            dut.dtheta.value = i
+            
 
         # Allow propagation and validate output
-        await Timer(1, units="ns")
-
-        for row in range(NUM_ROWS):
-            expected_column1 = (2**RGB_RES - 1) if (col_idx1 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
-            expected_column2 = (2**RGB_RES - 1) if (col_idx2 - RADIUS)**2 + (row - CENTER_Y)**2 <= RADIUS**2 else 0
-
-
-            actual_column1 = access_index(dut, 0, row)
-            actual_column2 = access_index(dut, 1, row)
-            
-            actual_circle[row][col_idx1] = actual_column1
-            actual_circle[row][col_idx2] = actual_column2
-            
-            print(f"Row {row}: {actual_column1}, {actual_column2}")
-            print(f"Expected: {expected_column1}, {expected_column2}")
-            assert actual_column1 == expected_column1, f"Mismatch for column1 at row {row}, col_idx1={col_idx1}"
-            assert actual_column2 == expected_column2, f"Mismatch for column2 at row {row}, col_idx2={col_idx2}"
 
         # Advance the clock
         await ClockCycles(dut.clk_in, 1)

@@ -147,7 +147,7 @@ module frame_manager #(
                     case (mode)
                         2'b00: columns <= 0; // cylinder mode (TODO: FIX)
                         2'b01: columns <= sphere_cols; // sphere mode
-                        2'b10: columns <= cube_cols; // cube mode
+                        2'b10: columns <= sphere_cols; // cube mode
                         2'b11: columns <= boids_cols; // boids mode
 
                         default: columns <= sphere_cols;
