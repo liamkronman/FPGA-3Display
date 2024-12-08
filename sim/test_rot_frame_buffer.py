@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 's
 
 
 from mock_display import Display
-from cube_points import create_cube, project_fibonacci
+from cube_points import create_cube, project_fibonacci_points
 
 import random
 import math

@@ -16,13 +16,12 @@ async def test_frame_manager(dut):
     # Reset DUT
     dut.rst_in.value = 1
     dut.mode.value = 2  # Initial mode
-    dut.hub75_ready.value = 0
-    dut.theta.value = 0
+    dut.hub75_ready.value = 1
+
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
 
     # Set mode to sphere (2'b01)
-    dut.mode.value = 1
 
     actual_circle = np.zeros(NUM_ROWS**2).reshape(NUM_ROWS, NUM_ROWS)
 
@@ -90,7 +89,7 @@ def frame_manager_runner():
     # Run the test
     runner.test(
         hdl_toplevel="frame_manager",
-        test_module="test_frame_manager",
+        test_module="test_frame_manager_square",
         waves=True
     )
 
