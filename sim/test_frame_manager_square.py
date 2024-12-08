@@ -52,11 +52,11 @@ async def test_frame_manager(dut):
             
             print(f"Row {row}: {actual_column1}, {actual_column2}")
             print(f"Expected: {expected_column1}, {expected_column2}")
-            as
-        await ClockCycles(dut.csert actual_column1 == expected_column1, f"Mismatch for column1 at row {row}, col_idx1={col_idx1}"
+            assert actual_column1 == expected_column1, f"Mismatch for column1 at row {row}, col_idx1={col_idx1}"
             assert actual_column2 == expected_column2, f"Mismatch for column2 at row {row}, col_idx2={col_idx2}"
 
-        # Advance the clocklk_in, 1)
+        # Advance the clock
+        await ClockCycles(dut.clk_in, 1)
 
     print("Test passed: frame_manager sphere mode outputs match expected sphere_cols.")
     # print the actual circle, comma-separated, fully expanded
