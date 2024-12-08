@@ -67,9 +67,15 @@ module frame_manager #(
             if (rfb_cols[0][i]) begin 
                 cube_cols[0][i] = {9{1'b1}};
             end
+            else begin
+                cube_cols[0][i] = {9{1'b0}};
+            end
 
             if (rfb_cols[1][i]) begin
                 cube_cols[1][i] = {9{1'b1}};
+            end
+            else begin
+                cube_cols[1][i] = {9{1'b0}};
             end
             
             
@@ -94,7 +100,7 @@ module frame_manager #(
         .column_index1(col_index_intermediate),
         .column_index2(col_index_intermediate+SCAN_RATE),
         .columns(sphere_cols)
-    );  
+    );
 
     /*cube_frame cf (
         .dtheta(dtheta),
@@ -145,21 +151,19 @@ module frame_manager #(
             col_num2 <= 0;
         end else begin
 
-            if (hub75_ready == 1 && old_hub75_ready == 0) begin // data just became ready (maybe useless as ready is 1-cycle)
+            if (1) begin // data just became ready (maybe useless as ready is 1-cycle)
                 // col_num1 <= col_num1 + 1;
                 // columns <= sphere_cols;
                 // col_index_intermediate <= col_index_intermediate + 1;
-                if (col_indices[intermediate_col_num1]) begin // iterates over 32 cycles
                     col_num1 <= intermediate_col_num1;
                     case (mode)
                         2'b00: columns <= 0; // cylinder mode (TODO: FIX)
                         2'b01: columns <= sphere_cols; // sphere mode
-                        2'b10: columns <= sphere_cols; // cube mode
+                        2'b10: columns <= cube_cols; // cube mode
                         2'b11: columns <= boids_cols; // boids mode
 
                         default: columns <= sphere_cols;
                     endcase
-                end
                 if (col_index_intermediate + 1 == SCAN_RATE) begin
                     col_index_intermediate <= 0;
                 end else begin

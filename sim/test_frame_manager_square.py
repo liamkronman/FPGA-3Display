@@ -66,6 +66,7 @@ def frame_manager_runner():
     sources += [proj_path/"hdl"/"rot_frame_buffer.sv"]
     sources += [proj_path / "hdl" / "xilinx_single_port_ram_read_first.sv"]
     sources += [proj_path / "hdl" / "xilinx_true_dual_port_read_first_2_clock_ram.v"]
+    sources += [proj_path / "hdl" / "hemi_sphere_frame.sv"]
     build_test_args = ["-Wall"]
     parameters = {
         "NUM_ROWS": NUM_ROWS,
