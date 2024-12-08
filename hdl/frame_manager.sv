@@ -66,6 +66,7 @@ module frame_manager #(
         for(int i = 0; i<64; i++) begin
             if (rfb_cols[0][i]) begin 
                 cube_cols[0][i] = {9{1'b1}};
+            end
 
             if (rfb_cols[1][i]) begin
                 cube_cols[1][i] = {9{1'b1}};
