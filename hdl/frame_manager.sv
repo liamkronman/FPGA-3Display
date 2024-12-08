@@ -1,6 +1,6 @@
 `default_nettype none
 module frame_manager #(
-    parameter ROTATIONAL_RES=256,
+    parameter ROTATIONAL_RES=1024,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
@@ -26,7 +26,6 @@ module frame_manager #(
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] cube_cols;
     logic [1:0][NUM_ROWS-1:0] rfb_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] boids_cols;
-    logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] rfb_cols;
 
     logic [$clog2(SCAN_RATE)-1:0] col_index_intermediate;
 
@@ -65,8 +64,14 @@ module frame_manager #(
         intermediate_col_num2 = intermediate_col_num1+SCAN_RATE;
 
         for(int i = 0; i<64; i++) begin
-            cube_cols[0][i] = {9{1'b1}};
-            cube_cols[1][i] = {9{1'b1}};
+            if (rfb_cols[0][i]) begin 
+                cube_cols[0][i] = {9{1'b1}};
+
+            if (rfb_cols[1][i]) begin
+                cube_cols[1][i] = {9{1'b1}};
+            end
+            
+            
         end
     end
 

@@ -1,6 +1,6 @@
 `default_nettype none
 module col_calc #(
-    parameter ROTATIONAL_RES=256,
+    parameter ROTATIONAL_RES=1024,
     parameter NUM_COLS=64 // always a power of 2
 )
 (
