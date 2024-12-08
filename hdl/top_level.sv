@@ -43,14 +43,14 @@ module top_level #(
 
     logic debounced_ir_tripped;
  
-    debouncer ir_tripped_db(.clk_in(sys_clk_buf),
+    debouncer ir_tripped_db(.clk_in(sysclk),
                     .rst_in(sys_rst),
                     .dirty_in(ir_tripped),
                     .clean_out(debounced_ir_tripped));
     
     // tie led0 to ir_led_control and led1 to low
     ir_led_control ilc(
-        .ir_tripped(debounced_ir_tripped),
+        .ir_tripped(ir_tripped),
         .led_out(led[0])
     );
     assign led[1] = 0;
@@ -70,7 +70,7 @@ module top_level #(
     logic hub75_ready;
     logic hub75_data_valid;
     detect_to_theta dt (
-        .ir_tripped(debounced_ir_tripped),
+        .ir_tripped(ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
         .dtheta(dtheta)
@@ -79,7 +79,7 @@ module top_level #(
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
         .rst_in(0),
-        .mode(2'b10), // hard-coded to SPHERE mode for now
+        .mode(2'b01), // hard-coded to SPHERE mode for now
         .dtheta(dtheta),
         .columns(columns),
 
