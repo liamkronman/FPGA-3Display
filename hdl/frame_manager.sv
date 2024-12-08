@@ -24,6 +24,7 @@ module frame_manager #(
  
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] sphere_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] cube_cols;
+    logic [1:0][NUM_ROWS-1:0] rfb_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] boids_cols;
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] rfb_cols;
 
@@ -52,8 +53,8 @@ module frame_manager #(
         col_num2 = col_index+SCAN_RATE;
         
 
-        if(mode == 2'b10 ) begin //if in sphere mode
-            intermediate_col_num1 = rfb_radius;
+        if(mode == 2'b10 ) begin //if in square mode
+            intermediate_col_num1 = 31 - rfb_radius;
 
 
         end
@@ -62,6 +63,11 @@ module frame_manager #(
 
         end
         intermediate_col_num2 = intermediate_col_num1+SCAN_RATE;
+
+        for(int i = 0; i<64; i++) begin
+            cube_cols[0][i] = {9{1'b1}};
+            cube_cols[1][i] = {9{1'b1}};
+        end
     end
 
     // sphere_frame sf ( // no need for a theta
@@ -101,7 +107,7 @@ module frame_manager #(
         .theta_write(0),
         .theta_read(dtheta),
         .busy(rfb_busy),
-        .columns(cube_cols)
+        .columns(rfb_cols)
 
     );
 
