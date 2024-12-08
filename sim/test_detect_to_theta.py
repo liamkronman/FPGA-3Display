@@ -66,9 +66,7 @@ async def test_detect_to_theta(dut):
     # test is tripping the IR on 10, 11, 12, etc. cycles
     for i in [1024, 2048]:
         await apply_theta_detection(dut, i)
-        dut.rst_in.value = 1
-        await ClockCycles(dut.clk_in, 5)
-        dut.rst_in.value = 0
+  
     
 
 def detect_to_theta_runner():
