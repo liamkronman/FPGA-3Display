@@ -2,7 +2,7 @@
 
 `default_nettype none
 module hemi_sphere_frame #(
-    parameter ROTATIONAL_RES=256,
+    parameter ROTATIONAL_RES=1024,
     parameter SCAN_RATE=32,
     parameter NUM_COLS=64,
     parameter NUM_ROWS=64,

@@ -40,9 +40,17 @@ module top_level #(
     assign sysclk = clk_24mhz;
 
     assign sys_rst = btn[0];
+
+    logic debounced_ir_tripped;
+ 
+    debouncer ir_tripped_db(.clk_in(sys_clk_buf),
+                    .rst_in(sys_rst),
+                    .dirty_in(ir_tripped),
+                    .clean_out(debounced_ir_tripped));
+    
     // tie led0 to ir_led_control and led1 to low
     ir_led_control ilc(
-        .ir_tripped(ir_tripped),
+        .ir_tripped(debounced_ir_tripped),
         .led_out(led[0])
     );
     assign led[1] = 0;
@@ -62,7 +70,7 @@ module top_level #(
     logic hub75_ready;
     logic hub75_data_valid;
     detect_to_theta dt (
-        .ir_tripped(ir_tripped),
+        .ir_tripped(debounced_ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
         .dtheta(dtheta)
