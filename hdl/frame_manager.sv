@@ -82,11 +82,11 @@ module frame_manager #(
         end
     end
 
-    // sphere_frame sf ( // no need for a theta
-    //     .column_index1(col_index_intermediate),
-    //     .column_index2(col_index_intermediate+SCAN_RATE),
-    //     .columns(sphere_cols)
-    // );
+    sphere_frame sf ( // no need for a theta
+        .column_index1(col_index_intermediate),
+        .column_index2(col_index_intermediate+SCAN_RATE),
+        .columns(sphere_cols)
+    );
 
     // color_sphere_frame sf (
     //     .dtheta(dtheta),
@@ -95,12 +95,12 @@ module frame_manager #(
     //     .columns(sphere_cols)
     // );
 
-    hemi_sphere_frame sf(
-        .dtheta(dtheta),
-        .column_index1(col_index_intermediate),
-        .column_index2(col_index_intermediate+SCAN_RATE),
-        .columns(sphere_cols)
-    );
+    // hemi_sphere_frame sf(
+    //     .dtheta(dtheta),
+    //     .column_index1(col_index_intermediate),
+    //     .column_index2(col_index_intermediate+SCAN_RATE),
+    //     .columns(sphere_cols)
+    // );
 
     /*cube_frame cf (
         .dtheta(dtheta),

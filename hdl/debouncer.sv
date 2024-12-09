@@ -5,8 +5,8 @@
 
 //written in lecture!
 //debounce_2.sv is a different attempt at this done after class with a few students
-module  debouncer #(parameter CLK_PERIOD_NS = 10,
-                    parameter DEBOUNCE_TIME_MS = 5
+module  debouncer #(parameter CLK_PERIOD_NS = 42, // in class we had 10ns for 100MHz. However, with 24MHz clock, the period is 41.67ns.
+                    parameter DEBOUNCE_TIME_MS = 50 // from 5->50. say, extreme case, it's high for like a quarter of a revolution. revolution is like ~300RPM = 5Hz => 200ms period. 1/4 * 200ms = 50ms
                     ) (   input wire clk_in,
                           input wire rst_in,
                           input wire dirty_in,
