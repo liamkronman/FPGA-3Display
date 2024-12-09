@@ -63,23 +63,7 @@ module frame_manager #(
         end
         intermediate_col_num2 = intermediate_col_num1+SCAN_RATE;
 
-        for(int i = 0; i<64; i++) begin
-            if (rfb_cols[0][i]) begin 
-                cube_cols[0][i] = {9{1'b1}};
-            end
-            else begin
-                cube_cols[0][i] = {9{1'b0}};
-            end
-
-            if (rfb_cols[1][i]) begin
-                cube_cols[1][i] = {9{1'b1}};
-            end
-            else begin
-                cube_cols[1][i] = {9{1'b0}};
-            end
-            
-            
-        end
+        
     end
 
     sphere_frame sf ( // no need for a theta
@@ -130,6 +114,8 @@ module frame_manager #(
         .columns(rfb_cols)
 
     );
+
+
 
     logic old_hub75_ready;
     // initial begin

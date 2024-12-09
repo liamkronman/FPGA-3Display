@@ -93,7 +93,6 @@ module top_level #(
         .data_valid(hub75_data_valid)
     );
 
-
   
     
 

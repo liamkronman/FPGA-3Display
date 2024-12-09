@@ -124,22 +124,30 @@ module rot_frame_buffer
 
       columns[0] = 0;
       columns[1] = 0;
+
+      radii[0] = 0;
+      radii[1] = 0;
     end else begin
       wea_1 = write_enable & theta < ROTATIONAL_RES/2;
       wea_2 = write_enable & theta >= ROTATIONAL_RES/2;
       
       if (state == WRITING || new_data) begin
         theta = new_data ? theta_write: theta_pipe[1]; // Funky logic to get ahead by one clock cycle
-
+        
         columns[0] = 0;
         columns[1] = 0;
+
+        radii[0] = 0;
+        radii[1] = 0;
       end else begin
         theta = theta_read;
-
+        
         if (state == WAIT) begin
           columns[0] = 0;
           columns[1] = 0;
           
+          radii[0] = 0;
+          radii[1] = 0;
         end else if (theta_pipe[1] < ROTATIONAL_RES/2) begin
           columns[0] = row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
           columns[1] = row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
@@ -176,6 +184,31 @@ module rot_frame_buffer
   always_ff @(posedge clk_in) begin
     if (rst_in) begin
       state <= IDLE;
+      // theta <= 0; 
+      // THIS ONE LINE CAUSED 5 HOURS OF DEBUGGING
+      
+      
+      //               _  /)
+      //               mo / )
+      //               |/)\)
+      //                /\_
+      //                \__|=
+      //               (    )
+      //               __)(__
+      //         _____/      \\_____
+      //         |                  ||
+      //         |  _     ___   _   ||
+      //         | | \     |   | \  ||
+      //         | |  |    |   |  | ||
+      //         | |_/     |   |_/  ||
+      //         | | \     |   |    ||
+      //         | |  \    |   |    ||
+      //         | |   \. _|_. | .  ||
+      //         |                  ||
+      // *       | *   **    * **   |**      **
+
+
+
     end else begin
       theta_pipe[0] <= theta;
       theta_pipe[1] <= theta_pipe[0];
