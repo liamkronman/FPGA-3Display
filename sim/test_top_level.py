@@ -12,11 +12,14 @@ async def test_top_level(dut):
     """Test frame_manager module in sphere mode."""
     # Start clock
     cocotb.start_soon(Clock(dut.clk_12mhz, 83, units="ns").start()) # 83 for 12MHz testing
+    dut.btn.value = 3;
+    await ClockCycles(dut.clk_12mhz, 1)
+    dut.btn.value = 0;
     for i in range(10):
-        dut.ir_tripped.value = 1;
-        await ClockCycles(dut.clk_in, 2)
+        dut.ir_tripped.value = 1
+        await ClockCycles(dut.clk_12mhz, 3)
         dut.ir_tripped.value = 0
-        await ClockCycles(dur.clk_in, 1024)
+        await ClockCycles(dut.clk_12mhz, 4096)
     
 
     
@@ -28,9 +31,9 @@ def top_level_runner():
 
     # Source files for the design
     sources = [proj_path / "hdl" / "top_level.sv"]
-    sources += [proj_path / "hdl" / "test_hub75.sv"]
+    sources += [proj_path / "hdl" / "hub75_output.sv"]
     sources += [proj_path / "hdl" / "ir_led_control.sv"]
-    sources += [proj_path / "hdl" / "sphere_frame.sv"]
+
     sources += [proj_path / "hdl" / "frame_manager.sv"]
     sources += [proj_path / "hdl" / "col_calc.sv"]
     sources += [proj_path / "hdl" / "sphere_frame.sv"]
@@ -41,13 +44,18 @@ def top_level_runner():
     sources += [proj_path / "hdl" / "xilinx_single_port_ram_read_first.sv"]
     sources += [proj_path / "hdl" / "xilinx_true_dual_port_read_first_2_clock_ram.v"]
     sources += [proj_path / "hdl" / "hemi_sphere_frame.sv"]
+    #sources += [proj_path / "hdl" / "clk_wiz.v"]
+    sources += [proj_path / "hdl" / "detect_to_theta.sv"]
+    sources += [proj_path / "hdl" / "debouncer.sv"]
+
     build_test_args = ["-Wall"]
     parameters = {
-        "NUM_ROWS": NUM_ROWS,
-        "RGB_RES": RGB_RES,
-        "NUM_COLS": NUM_COLS,
-        "SCAN_RATE": SCAN_RATE
-    }
+        "ROTATIONAL_RES": 1024,
+        "NUM_COLS": 64,
+        "NUM_ROWS": 64,
+        "SCAN_RATE": 32,
+        "RGB_RES": 9
+    } 
 
     # Initialize the runner
     runner = get_runner(sim)
@@ -69,4 +77,4 @@ def top_level_runner():
     )
 
 if __name__ == "__main__":
-    frame_manager_runner()
+    top_level_runner()

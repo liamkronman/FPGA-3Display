@@ -6,7 +6,7 @@ module hub75_output #(
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
     parameter THETA_RES=8,
-    parameter PERIOD=100, //set to be a function of theta in the future
+    parameter PERIOD=1000, //set to be a function of theta in the future
     parameter RGB_RES=9
 )
  (
@@ -46,13 +46,12 @@ module hub75_output #(
     pixel_counter = 0; 
     clk_msk = 0;
     period_counter = 0;
-    tready = 0;
 
    end
 
    always_comb begin
 
-    if(pwm_counter == 0) begin
+    /*if(pwm_counter == 0) begin
 
             rgb0[0] = columns[0][pixel_counter][0];
             rgb0[1] = columns[0][pixel_counter][3];
@@ -81,7 +80,7 @@ module hub75_output #(
             rgb1[0] = columns[1][pixel_counter][2];
             rgb1[1] = columns[1][pixel_counter][5];
             rgb1[2] = columns[1][pixel_counter][8];
-        end
+        end*/
    end
 
    always_ff @(posedge clk_in) begin

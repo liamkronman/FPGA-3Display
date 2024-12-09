@@ -31,15 +31,16 @@ module detect_to_theta #(
     // Consider: a smoother period (like having speriod which is the average over the past 8 revolutions?)
 
     logic old_ir_tripped;
-
+    logic inited;
     always_ff @(posedge clk_in) begin
-        if (rst_in) begin
+        if (rst_in || !inited) begin
             theta <= 0;
             period <= $clog2(THETA_RES);
             old_ir_tripped <= 0;
             cp_theta <= ROTATIONAL_RES;
             angle_counter <= 0;
             dtheta <= 0;
+            inited <= 1;
         end else begin
             if (ir_tripped & ~old_ir_tripped) begin // ir_tripped went from low to high
                 period <= theta;

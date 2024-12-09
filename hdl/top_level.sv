@@ -25,19 +25,23 @@ module top_level #(
     logic clk_24mhz;
     logic clk_12mhz_passthrough;
     
-    BUFG sys_clk_buf
+    /*BUFG sys_clk_buf
    (.O (clk_12mhz_passthrough),
     .I (clk_12mhz));
     clk_wiz clock_wizard
     (.sysclk(clk_12mhz_passthrough),
     .clk_100mhz(clk_100mhz),
     .clk_24mhz(clk_24mhz),
-    .reset(0));
+    .reset(0));*/
 
     logic sysclk;
     logic sys_rst;
 
-    assign sysclk = clk_24mhz;
+    always_comb begin
+        sysclk = clk_12mhz;
+    end
+
+    //assign sysclk = clk_12mhz;
 
     assign sys_rst = btn[0];
 
@@ -79,7 +83,7 @@ module top_level #(
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
         .rst_in(0),
-        .mode(2'b10), // hard-coded to SPHERE mode for now
+        .mode(2'b01), // hard-coded to SPHERE mode for now
         .dtheta(dtheta),
         .columns(columns),
 
