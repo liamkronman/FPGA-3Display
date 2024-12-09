@@ -53,7 +53,7 @@ module frame_manager #(
         
 
         if(mode == 2'b10 ) begin //if in square mode
-            intermediate_col_num1 = 31 - rfb_radius;
+            intermediate_col_num1 = rfb_radius;
 
 
         end
