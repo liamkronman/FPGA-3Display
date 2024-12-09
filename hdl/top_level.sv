@@ -82,7 +82,7 @@ module top_level #(
 
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
-        .rst_in(0),
+        .rst_in(sys_rst),
         .mode(2'b10), // hard-coded to SPHERE mode for now
         .dtheta(dtheta),
         .columns(columns),
@@ -93,23 +93,22 @@ module top_level #(
         .data_valid(hub75_data_valid)
     );
 
-    always_ff @(posedge sysclk) begin
-        hub75_addr <= col_num1;
-    end
+  
     
 
     hub75_output hub75 (
         .clk_in(sysclk), // use a different clock?
-        .rst_in(0),
-        .col_index(20),
+        .rst_in(sys_rst),
         .column_data(columns),
         .tvalid(hub75_data_valid),
         .tready(hub75_ready),
-
+        .address_data(col_num1),
         .rgb0(hub75_rgb0),
         .rgb1(hub75_rgb1),
         .led_latch(hub75_latch),
         .led_output_enable(hub75_OE),
+        .hub75_address(hub75_addr),
+        
         .led_clk(hub75_clk)
     );
     // always_ff @(posedge sysclk) begin  

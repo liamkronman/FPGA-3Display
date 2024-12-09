@@ -15,7 +15,8 @@ module hub75_output #(
     //TODO: add second clk and change module to take multiple clocks
     input wire [1:0][NUM_ROWS-1:0][RGB_RES-1:0] column_data,
     //input wire [NUM_ROWS-1:0][RGB_RES:0] column_data1,
-    input wire [$clog2(SCAN_RATE)-1:0] col_index,
+    input wire [$clog2(SCAN_RATE)-1:0] address_data,
+
     
     output logic [2:0] rgb0,
     output logic [2:0] rgb1,
@@ -23,6 +24,7 @@ module hub75_output #(
     output logic led_latch, 
     output logic led_clk,
     output logic led_output_enable,
+    output logic [$clog2(SCAN_RATE)-1:0] hub75_address,
 
     //AXI Stream logic
     input wire         tvalid,
@@ -102,6 +104,7 @@ module hub75_output #(
             pwm_counter <= 0;
             pixel_counter <= 0;
             led_latch <= 0;
+            hub75_address <= address_data;
         end
     end
     else if(state == 1) begin //BCM
