@@ -6,7 +6,7 @@ module hub75_output #(
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
     parameter THETA_RES=8,
-    parameter PERIOD=1000, //set to be a function of theta in the future
+    parameter PERIOD=10, //set to be a function of theta in the future
     parameter RGB_RES=9
 )
  (
