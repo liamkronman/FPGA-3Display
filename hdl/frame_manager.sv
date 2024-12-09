@@ -177,9 +177,9 @@ module frame_manager #(
                 old_dtheta <= dtheta;
                 
             end 
-            if (data_valid) begin
+            /*if (data_valid) begin
                 data_valid <= 0;
-            end
+            end*/
             old_hub75_ready <= hub75_ready;
         end
     end
