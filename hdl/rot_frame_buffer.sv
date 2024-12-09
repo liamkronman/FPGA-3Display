@@ -69,7 +69,7 @@ module rot_frame_buffer
     .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(fill_buffer_1.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(cube_buffer_1.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_0_to_pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -87,7 +87,7 @@ module rot_frame_buffer
     .RAM_WIDTH(COLUMN_DATA_WIDTH),  // Specify RAM data width
     .RAM_DEPTH(ROTATIONAL_RES/2),       // Specify RAM depth (number of entries)
     .RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-    .INIT_FILE(`FPATH(fill_buffer_2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
+    .INIT_FILE(`FPATH(cube_buffer_2.mem))          // Specify name/location of RAM initialization file if using one (leave blank if not)
   ) buffer_pi_to_2pi (
     .addra(addr_theta),                        // Address bus, width determined from RAM_DEPTH
     .dina(new_column),                    // RAM input data, width determined from RAM_WIDTH
@@ -124,22 +124,30 @@ module rot_frame_buffer
 
       columns[0] = 0;
       columns[1] = 0;
+
+      radii[0] = 0;
+      radii[1] = 0;
     end else begin
       wea_1 = write_enable & theta < ROTATIONAL_RES/2;
       wea_2 = write_enable & theta >= ROTATIONAL_RES/2;
       
       if (state == WRITING || new_data) begin
         theta = new_data ? theta_write: theta_pipe[1]; // Funky logic to get ahead by one clock cycle
-
+        
         columns[0] = 0;
         columns[1] = 0;
+
+        radii[0] = 0;
+        radii[1] = 0;
       end else begin
         theta = theta_read;
-
+        
         if (state == WAIT) begin
           columns[0] = 0;
           columns[1] = 0;
           
+          radii[0] = 0;
+          radii[1] = 0;
         end else if (theta_pipe[1] < ROTATIONAL_RES/2) begin
           columns[0] = row_1_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
           columns[1] = row_2_out[DISPLAY_HEIGHT*DATA_SIZE-1:0];
@@ -176,7 +184,31 @@ module rot_frame_buffer
   always_ff @(posedge clk_in) begin
     if (rst_in) begin
       state <= IDLE;
-      theta <= 0;
+      // theta <= 0; 
+      // THIS ONE LINE CAUSED 5 HOURS OF DEBUGGING
+      
+      
+      //               _  /)
+      //               mo / )
+      //               |/)\)
+      //                /\_
+      //                \__|=
+      //               (    )
+      //               __)(__
+      //         _____/      \\_____
+      //         |                  ||
+      //         |  _     ___   _   ||
+      //         | | \     |   | \  ||
+      //         | |  |    |   |  | ||
+      //         | |_/     |   |_/  ||
+      //         | | \     |   |    ||
+      //         | |  \    |   |    ||
+      //         | |   \. _|_. | .  ||
+      //         |                  ||
+      // *       | *   **    * **   |**      **
+
+
+
     end else begin
       theta_pipe[0] <= theta;
       theta_pipe[1] <= theta_pipe[0];
