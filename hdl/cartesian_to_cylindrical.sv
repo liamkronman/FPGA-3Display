@@ -10,7 +10,7 @@
 
 module cartesian_to_cylindrical #(
     parameter RANGE = 64,
-    parameter ROTATIONAL_RESOLUTION = 64
+    parameter ROTATIONAL_RESOLUTION = 1024
 )(
     input wire rst_in,
     input wire clk_in,
