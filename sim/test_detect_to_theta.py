@@ -17,8 +17,8 @@ from cocotb.runner import get_runner
 
 # * clearly, this scale doesn't seem practical to run in simulation
 # * simplification:
-#   * 1024 (+/- 50) clock cycles per revolution = 4 clock cycles per revolution
-#   * still 256 cross sections
+#   * 2056 (+/- 50) clock cycles per revolution = 2 clock cycles per cross section
+#   * still 1024 cross sections
 #   * basically, check every 4 clock cycles that dtheta is incrementing
 
 
@@ -38,20 +38,23 @@ async def apply_theta_detection(dut, cycles):
     #assert dut.period.value == cycles
 
 async def ir_trip_testing(dut, cs_cycles, num_cs):
-    # :params:
-    #   dut: cocotb handle
-    #   cs_cycles: int, number of clock cycles per "cross section"
-    #   num_cs: int, number of cross sections
-    # :return:
-    #   None
-
+    """
+    :params:
+      dut: cocotb handle
+      cs_cycles: int, number of clock cycles per "cross section"
+      num_cs: int, number of cross sections
+    :return:
+      None
+    """
     dut.ir_tripped.value = 1
     await ClockCycles(dut.clk_in, 1)
     dut.ir_tripped.value = 0
     await ClockCycles(dut.clk_in, 1)
-    assert dut.dtheta.value == 0
-    await ClockCycles(dut.clk_in, num_cs)
-    
+    for i in range(num_cs):
+        print(f"dtheta: {dut.dtheta.value}")
+        print(f"i: {i}")
+        assert dut.dtheta.value == i
+        await ClockCycles(dut.clk_in, cs_cycles)
 
 
 @cocotb.test()
@@ -63,11 +66,20 @@ async def test_detect_to_theta(dut):
     dut.ir_tripped.value = 0
     await ClockCycles(dut.clk_in, 5)
     dut.rst_in.value = 0
-    # test is tripping the IR on 10, 11, 12, etc. cycles
-    for i in [1024, 2048]:
-        await apply_theta_detection(dut, i)
-  
-    
+    # run the IR trip testing for 1024 cycles
+    cs_cycles = 2
+    num_cs = 1024
+    total_cycles = cs_cycles * num_cs
+    dut.ir_tripped.value = 1
+    await ClockCycles(dut.clk_in, 1)
+    dut.ir_tripped.value = 0
+    await ClockCycles(dut.clk_in, total_cycles)
+    await ir_trip_testing(dut, cs_cycles, num_cs)
+
+    # # test is tripping the IR on 10, 11, 12, etc. cycles
+    # for i in [1024, 2048]:
+    #     # await apply_theta_detection(dut, i)
+    #     await ir_trip_testing(dut, 4, i//4)
 
 def detect_to_theta_runner():
     """Runner function for detect to theta testbench."""

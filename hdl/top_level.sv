@@ -79,7 +79,7 @@ module top_level #(
     frame_manager fm (
         .clk_in(sysclk), // use a different clock?
         .rst_in(0),
-        .mode(2'b01), // hard-coded to SPHERE mode for now
+        .mode(2'b10), // hard-coded to SPHERE mode for now
         .dtheta(dtheta),
         .columns(columns),
 
