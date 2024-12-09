@@ -84,7 +84,7 @@ module top_level #(
         .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .mode(2'b10), // hard-coded to SPHERE mode for now
-        .dtheta(10'd67),
+        .dtheta(dtheta),
         .columns(columns),
 
         .col_num1(col_num1),
@@ -102,7 +102,7 @@ module top_level #(
         .column_data(columns),
         .tvalid(hub75_data_valid),
         .tready(hub75_ready),
-        .address_data(col_num1),
+        .address_data(dtheta),
         .rgb0(hub75_rgb0),
         .rgb1(hub75_rgb1),
         .led_latch(hub75_latch),
