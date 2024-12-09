@@ -11,18 +11,15 @@ import numpy as np
 async def test_top_level(dut):
     """Test frame_manager module in sphere mode."""
     # Start clock
-    cocotb.start_soon(Clock(dut.clk_in, 83, units="ns").start()) # 83 for 12MHz testing
-
-
-
+    cocotb.start_soon(Clock(dut.clk_12mhz, 83, units="ns").start()) # 83 for 12MHz testing
+    for i in range(10):
+        dut.ir_tripped.value = 1;
+        await ClockCycles(dut.clk_in, 2)
+        dut.ir_tripped.value = 0
+        await ClockCycles(dur.clk_in, 1024)
     
 
     
-    print("Test passed: frame_manager sphere mode outputs match expected sphere_cols.")
-    # print the actual circle, comma-separated, fully expanded
-    print("Actual circle:")
-    print(np.array2string(actual_circle, separator=", "))
-
 def top_level_runner():
     """Runner function for frame_manager testbench."""
     hdl_toplevel_lang = os.getenv("HDL_TOPLEVEL_LANG", "verilog")
