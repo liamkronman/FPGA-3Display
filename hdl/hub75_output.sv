@@ -52,6 +52,10 @@ module hub75_output #(
    end
 
    always_comb begin
+        rgb0[0] =1;
+        rgb0[1] = 0;
+        rgb0[2] = 1;
+    
 
     /*if(pwm_counter == 0) begin
 

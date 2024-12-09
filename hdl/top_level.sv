@@ -84,7 +84,7 @@ module top_level #(
         .clk_in(sysclk), // use a different clock?
         .rst_in(sys_rst),
         .mode(2'b10), // hard-coded to SPHERE mode for now
-        .dtheta(dtheta),
+        .dtheta(10'd67),
         .columns(columns),
 
         .col_num1(col_num1),

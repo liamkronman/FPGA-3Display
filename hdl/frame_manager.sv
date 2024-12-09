@@ -125,7 +125,7 @@ module frame_manager #(
         .radius(0),
         .z(0),
         .theta_write(0),
-        .theta_read(dtheta),
+        .theta_read(10'd200),
         .busy(rfb_busy),
         .columns(rfb_cols)
 
