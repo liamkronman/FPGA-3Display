@@ -55,7 +55,7 @@ module hub75_output #(
         
 
 
-    /*if(pwm_counter == 0) begin
+    if(pwm_counter == 0) begin
 
             rgb1[0] = columns[0][pixel_counter][0];
             rgb1[1] = columns[0][pixel_counter][3];
@@ -84,7 +84,7 @@ module hub75_output #(
             rgb1[0] = columns[1][pixel_counter][2];
             rgb1[1] = columns[1][pixel_counter][5];
             rgb1[2] = columns[1][pixel_counter][8];
-        end*/
+        end
    end
 
    always_ff @(posedge clk_in) begin
