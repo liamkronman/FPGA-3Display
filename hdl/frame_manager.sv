@@ -12,6 +12,7 @@ module frame_manager #(
     input wire clk_in,
     input wire [$clog2(ROTATIONAL_RES)-1:0] dtheta, // where we currently are in the rotation (discretized within [0,ROTATIONAL_RES))
     input wire hub75_ready, // wait for hub75 to say it's ready before streaming the two columns
+    input wire hub75_last,
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic [$clog2(SCAN_RATE)-1:0] col_num1,
     output logic [$clog2(SCAN_RATE):0] col_num2,
@@ -110,6 +111,7 @@ module frame_manager #(
         .rst_in(rst_in),
         .clk_in(clk_in),
         .hub75_ready(hub75_ready),
+        .hub75_last(hub75_last),
         .radii_input(rfb_radii),
         .rfb_cols_input(rfb_cols),
         .data_valid(rfb_data_valid),
