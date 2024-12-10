@@ -15,6 +15,9 @@ module rot_frame_buffer_to_hub75
 
     input wire [1:0][$clog2(SCAN_RATE)-1:0] radii_input,
     input wire [1:0][NUM_ROWS-1:0] rfb_cols_input,
+
+    input wire [$clog2(ROTATIONAL_RES)-1:0] theta,
+
     output logic [$clog2(SCAN_RATE)-1:0] col_num,
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic data_valid
@@ -32,20 +35,27 @@ module rot_frame_buffer_to_hub75
 
     logic [$clog2(SCAN_RATE)-1:0] current_col_num;
     logic [NUM_ROWS-1:0][RGB_RES-1:0]  current_column;
+
+    logic [2:0] theta_top_bits;
+
+    assign theta_top_bits = theta[$clog2(ROTATIONAL_RES)-1: $clog2(ROTATIONAL_RES)-3];
     
 
     always_comb begin
 
         for(int i = 0; i<64; i++) begin
             if (rfb_cols_input[0][i]) begin 
-                input_cols[0][i] = {RGB_RES{1'b1}};
+                // input_cols[0][i] = {RGB_RES{1'b1}};
+                //takes top 3 bits of theta
+                input_cols[0][i] = { theta_top_bits, 3'b111 - theta_top_bits , {3{1'b0}} };
             end
             else begin
                 input_cols[0][i] = {RGB_RES{1'b0}};
             end
 
             if (rfb_cols_input[1][i]) begin
-                input_cols[1][i] = {RGB_RES{1'b1}};
+                // input_cols[1][i] = {RGB_RES{1'b1}};
+                input_cols[1][i] = { theta_top_bits + 3'b100, 3'b111 - theta_top_bits + 3'b100, {3{1'b0}} };
             end
             else begin
                 input_cols[1][i] = {RGB_RES{1'b0}};
