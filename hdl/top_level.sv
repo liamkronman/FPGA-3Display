@@ -73,6 +73,8 @@ module top_level #(
 
     logic hub75_ready;
     logic hub75_data_valid;
+    logic hub75_last;
+
     detect_to_theta dt (
         .ir_tripped(ir_tripped),
         .clk_in(sysclk),
@@ -90,6 +92,7 @@ module top_level #(
         .col_num1(col_num1),
         .col_num2(col_num2),
         .hub75_ready(hub75_ready),
+        .hub75_last(hub75_last)
         .data_valid(hub75_data_valid)
     );
 
@@ -102,6 +105,7 @@ module top_level #(
         .column_data(columns),
         .tvalid(hub75_data_valid),
         .tready(hub75_ready),
+        .tlast(hub75_last),
         .address_data(dtheta),
         .rgb0(hub75_rgb0),
         .rgb1(hub75_rgb1),

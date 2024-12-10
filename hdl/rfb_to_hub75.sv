@@ -11,6 +11,7 @@ module rot_frame_buffer_to_hub75
     input wire clk_in,
 
     input wire hub75_ready,
+    input wire hub75_last,
 
     input wire [1:0][$clog2(SCAN_RATE)-1:0] radii_input,
     input wire [1:0][NUM_ROWS-1:0] rfb_cols_input,
@@ -37,17 +38,17 @@ module rot_frame_buffer_to_hub75
 
         for(int i = 0; i<64; i++) begin
             if (rfb_cols_input[0][i]) begin 
-                input_cols[0][i] = {9{1'b1}};
+                input_cols[0][i] = {RGB_RES{1'b1}};
             end
             else begin
-                input_cols[0][i] = {9{1'b0}};
+                input_cols[0][i] = {RGB_RES{1'b0}};
             end
 
             if (rfb_cols_input[1][i]) begin
-                input_cols[1][i] = {9{1'b1}};
+                input_cols[1][i] = {RGB_RES{1'b1}};
             end
             else begin
-                input_cols[1][i] = {9{1'b0}};
+                input_cols[1][i] = {RGB_RES{1'b0}};
             end 
             
         end
@@ -75,7 +76,7 @@ module rot_frame_buffer_to_hub75
             else if (state == 1) begin
                 columns[0] <= column0;
                 columns[1] <= 0;
-                col_num <= radii[0];
+                col_num <= radii[1];
                 data_valid <= 1;
                 state <= 2;
 
@@ -85,7 +86,7 @@ module rot_frame_buffer_to_hub75
             else if (state == 2) begin
                 columns[0] <=0;
                 columns[1] <= column1;
-                col_num <= radii[1];
+                col_num <= radii[0];
                 state <= 0;
 
 

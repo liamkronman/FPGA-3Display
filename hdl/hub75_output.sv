@@ -27,8 +27,9 @@ module hub75_output #(
     output logic [$clog2(SCAN_RATE)-1:0] hub75_address,
 
     //AXI Stream logic
-    input wire         tvalid,
-    output logic         tready
+    input wire   tvalid,
+    output logic tready,
+    output logic tlast
 );
 
    logic [$clog2(NUM_COLS)-1:0] pixel_counter;
@@ -41,6 +42,7 @@ module hub75_output #(
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
 
    assign tready = state == 0;
+    assign tlast = period_counter == PERIOD * (pwm_counter + 1) - 1 && pwm_counter == 2
     
 
    initial begin 
@@ -55,11 +57,11 @@ module hub75_output #(
         
 
 
-    /*if(pwm_counter == 0) begin
+    if(pwm_counter == 0) begin
 
-            rgb1[0] = columns[0][pixel_counter][0];
-            rgb1[1] = columns[0][pixel_counter][3];
-            rgb1[2] = columns[0][pixel_counter][6];
+            rgb0[0] = columns[0][pixel_counter][0];
+            rgb0[1] = columns[0][pixel_counter][3];
+            rgb0[2] = columns[0][pixel_counter][6];
 
             rgb1[0] = columns[1][pixel_counter][0];
             rgb1[1] = columns[1][pixel_counter][3];
@@ -68,23 +70,23 @@ module hub75_output #(
 
         end
         else if(pwm_counter == 1) begin
-            rgb1[0] = columns[0][pixel_counter][1] ;
-            rgb1[1] = columns[0][pixel_counter][4];
-            rgb1[2] = columns[0][pixel_counter][7];
+            rgb0[0] = columns[0][pixel_counter][1] ;
+            rgb0[1] = columns[0][pixel_counter][4];
+            rgb0[2] = columns[0][pixel_counter][7];
 
             rgb1[0] = columns[1][pixel_counter][1];
             rgb1[1] = columns[1][pixel_counter][4];
             rgb1[2] = columns[1][pixel_counter][7];
         end
         else if(pwm_counter == 2) begin
-            rgb1[0] = columns[0][pixel_counter][2] ;
-            rgb1[1] = columns[0][pixel_counter][5];
-            rgb1[2] = columns[0][pixel_counter][8];
+            rgb0[0] = columns[0][pixel_counter][2] ;
+            rgb0[1] = columns[0][pixel_counter][5];
+            rgb0[2] = columns[0][pixel_counter][8];
 
             rgb1[0] = columns[1][pixel_counter][2];
             rgb1[1] = columns[1][pixel_counter][5];
             rgb1[2] = columns[1][pixel_counter][8];
-        end*/
+        end
    end
 
    always_ff @(posedge clk_in) begin
@@ -160,6 +162,8 @@ module hub75_output #(
             end
         end
     end
+
+   
 
    end
 endmodule
