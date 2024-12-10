@@ -38,7 +38,7 @@ def obj_to_point_cloud(obj_file_name, grid_size=64):
 if __name__=="__main__":
     # specific to Liam's path
     argparser = argparse.ArgumentParser()
-    # if the first arg is a 0, do the bunny. if it's a 1, do the tie fighter
+    # if the first arg is a 0, do the bunny. if it's a 1, do the tie fighter. 2 is vader helmet
     argparser.add_argument("arg1", type=int)
     args = argparser.parse_args()
     if args.arg1 == 0:
@@ -56,4 +56,12 @@ if __name__=="__main__":
         # save grid to csv file. needs to be parsed from 2D numpy array
         np.savetxt("assets/tie_fighter2.csv", grid.reshape(-1, grid.shape[-1]), delimiter=",", fmt="%d")
         np.savetxt("assets/tie_fighter.csv", points, delimiter=",", fmt='%i')
+        # np.save("assets/cube_point_cloud.npy", grid)
+    elif args.arg1 == 2:
+        obj_file = "/Users/liamkronman/Documents/GitHub/6.2050/3display/assets/vader_helmet.obj"
+        points, grid = obj_to_point_cloud(obj_file)
+        print(points)
+        # save grid to csv file. needs to be parsed from 2D numpy array
+        np.savetxt("assets/vader_helmet2.csv", grid.reshape(-1, grid.shape[-1]), delimiter=",", fmt="%d")
+        np.savetxt("assets/vader_helmet.csv", points, delimiter=",", fmt='%i')
         # np.save("assets/cube_point_cloud.npy", grid)
