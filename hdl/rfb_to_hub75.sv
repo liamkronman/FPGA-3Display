@@ -46,9 +46,9 @@ module rot_frame_buffer_to_hub75
         for(int i = 0; i<64; i++) begin
             zero_column[i] = {RGB_RES{1'b0}};
             if (rfb_cols_input[0][i]) begin 
-                // input_cols[0][i] = {RGB_RES{1'b1}};
+                input_cols[0][i] = {RGB_RES{1'b1}};
                 //takes top 3 bits of theta
-                input_cols[0][i] = { theta_top_bits, 3'b111 - theta_top_bits , {3{1'b0}} };
+                //input_cols[0][i] = { 1'b0, theta };
             end
             else begin
                 input_cols[0][i] = {RGB_RES{1'b0}};
@@ -56,8 +56,8 @@ module rot_frame_buffer_to_hub75
             end
 
             if (rfb_cols_input[1][i]) begin
-                // input_cols[1][i] = {RGB_RES{1'b1}};
-                input_cols[1][i] = { theta_top_bits + 3'b100, 3'b111 - theta_top_bits + 3'b100, {3{1'b0}} };
+                input_cols[1][i] = {RGB_RES{1'b1}};
+                //input_cols[1][i] = {  1'b0, theta };
             end
             else begin
                 input_cols[1][i] = {RGB_RES{1'b0}};
@@ -100,9 +100,9 @@ module rot_frame_buffer_to_hub75
             end
 
             else if (state == 2) begin
-                columns[0] <=column1;
+                columns[0] <= column1;
                 columns[1] <= zero_column;
-                col_num <= radii[1];
+                col_num <= 31 -  radii[1];
                 state <= 0;
 
 

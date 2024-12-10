@@ -116,7 +116,8 @@ module frame_manager #(
         .rfb_cols_input(rfb_cols),
         .data_valid(rfb_data_valid),
         .col_num(rfb_col_num),
-        .columns(cube_cols)
+        .columns(cube_cols),
+        .theta(dtheta)
 
 
     );
