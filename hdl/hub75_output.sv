@@ -53,19 +53,17 @@ module hub75_output #(
 
    always_comb begin
         
-    rgb0[0] = 0;
-    rgb0[1] = 0;
-    rgb0[2] = 0;
 
-    if(pwm_counter == 0) begin
+
+    /*if(pwm_counter == 0) begin
 
             rgb1[0] = columns[0][pixel_counter][0];
             rgb1[1] = columns[0][pixel_counter][3];
             rgb1[2] = columns[0][pixel_counter][6];
 
-            /*rgb1[0] = columns[1][pixel_counter][0];
+            rgb1[0] = columns[1][pixel_counter][0];
             rgb1[1] = columns[1][pixel_counter][3];
-            rgb1[2] = columns[1][pixel_counter][6];*/
+            rgb1[2] = columns[1][pixel_counter][6];
 
 
         end
@@ -74,19 +72,19 @@ module hub75_output #(
             rgb1[1] = columns[0][pixel_counter][4];
             rgb1[2] = columns[0][pixel_counter][7];
 
-           /* rgb1[0] = columns[1][pixel_counter][1];
+            rgb1[0] = columns[1][pixel_counter][1];
             rgb1[1] = columns[1][pixel_counter][4];
-            rgb1[2] = columns[1][pixel_counter][7];*/
+            rgb1[2] = columns[1][pixel_counter][7];
         end
         else if(pwm_counter == 2) begin
             rgb1[0] = columns[0][pixel_counter][2] ;
             rgb1[1] = columns[0][pixel_counter][5];
             rgb1[2] = columns[0][pixel_counter][8];
 
-            /*rgb1[0] = columns[1][pixel_counter][2];
+            rgb1[0] = columns[1][pixel_counter][2];
             rgb1[1] = columns[1][pixel_counter][5];
-            rgb1[2] = columns[1][pixel_counter][8];*/
-        end
+            rgb1[2] = columns[1][pixel_counter][8];
+        end*/
    end
 
    always_ff @(posedge clk_in) begin

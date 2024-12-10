@@ -35,6 +35,7 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
+    logic [1:0][$clog2(SCAN_RATE)-1:0] rfb_radii;
     logic [$clog2(SCAN_RATE)-1:0] rfb_col_num;
 
     logic rfb_busy; 
@@ -104,19 +105,19 @@ module frame_manager #(
         .columns(rfb_cols)
 
     );
-
+    logic rfb_data_valid;
     rot_frame_buffer_to_hub75 rfb_to_hub75 (
         .rst_in(rst_in),
         .clk_in(clk_in),
         .hub75_ready(hub75_ready),
         .radii_input(rfb_radii),
         .rfb_cols_input(rfb_cols),
-        .data_valid(rfb_data_valid)
-        .col_num(),
-        .columns(cube_cols),
+        .data_valid(rfb_data_valid),
+        .col_num(rfb_col_num),
+        .columns(cube_cols)
 
 
-    )
+    );
 
 
 

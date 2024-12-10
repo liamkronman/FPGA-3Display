@@ -87,7 +87,6 @@ module rot_frame_buffer_to_hub75
 
             end
             else if (state == 2) begin
-
                 data_valid <= 0;
                 if(hub75_ready) begin
                     state <= 3;
