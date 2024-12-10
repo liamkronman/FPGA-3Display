@@ -28,6 +28,9 @@ def obj_to_point_cloud(obj_file_name, grid_size=64):
     for point in unique_points:
         point_cloud_grid[tuple(point)] = True
 
+    # int cast all the points
+    unique_points = unique_points.astype(int)
+
     return unique_points, point_cloud_grid
 
 
@@ -36,4 +39,6 @@ if __name__=="__main__":
     obj_file = "/Users/liamkronman/Documents/GitHub/6.2050/3display/assets/stanford_bunny.obj"
     points, grid = obj_to_point_cloud(obj_file)
     print(points)
-    np.save("cube_point_cloud.npy", grid)
+    # save points to csv file. needs to be parsed from 2D numpy array
+    np.savetxt("assets/bunny_point_cloud.csv", points, delimiter=",", fmt='%i')
+    # np.save("assets/cube_point_cloud.npy", grid)
