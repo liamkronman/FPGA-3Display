@@ -43,6 +43,7 @@ module detect_to_theta #(
             inited <= 1;
         end else begin
             if (ir_tripped & ~old_ir_tripped) begin // ir_tripped went from low to high
+                // period <= (theta >> 2) + (theta >> 1) + (period >> 2); // 0.25 * old_period + 0.75 * new_period
                 period <= theta;
                 theta <= 0;
                 cp_theta <= (theta >> $clog2(ROTATIONAL_RES));
