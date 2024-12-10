@@ -17,7 +17,7 @@ async def test_top_level(dut):
     dut.btn.value = 0;
     for i in range(10):
         dut.ir_tripped.value = 1
-        await ClockCycles(dut.clk_12mhz, 3)
+        await ClockCycles(dut.clk_12mhz, 2)
         dut.ir_tripped.value = 0
         await ClockCycles(dut.clk_12mhz, 4096)
     

@@ -13,7 +13,7 @@ module rot_frame_buffer_to_hub75
     input wire hub75_ready,
 
     input wire [1:0][$clog2(SCAN_RATE)-1:0] radii_input,
-    input wire [1:0][$clog2(SCAN_RATE)-1:0] rfb_cols_input,
+    input wire [1:0][NUM_ROWS-1:0] rfb_cols_input,
     output logic [$clog2(SCAN_RATE)-1:0] col_num,
     output logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] columns,
     output logic data_valid
@@ -79,23 +79,14 @@ module rot_frame_buffer_to_hub75
                 data_valid <= 1;
                 state <= 2;
 
-                if(hub75_ready) begin
-
-                    state <= 2; 
-                end
-
 
             end
+
             else if (state == 2) begin
-                data_valid <= 0;
-                if(hub75_ready) begin
-                    state <= 3;
-                end
-            end
-            else if (state == 3) begin
                 columns[0] <=0;
                 columns[1] <= column1;
-                col_num <= radii[1] - 32;
+                col_num <= radii[1];
+                state <= 0;
 
 
             end
