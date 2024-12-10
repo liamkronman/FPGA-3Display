@@ -38,7 +38,7 @@ module top_level #(
     logic sys_rst;
 
     always_comb begin
-        sysclk = clk_12mhz;
+        sysclk = clk_24mhz;
     end
 
     //assign sysclk = clk_12mhz;
@@ -76,7 +76,7 @@ module top_level #(
     logic hub75_last;
 
     detect_to_theta dt (
-        .ir_tripped(debounced_ir_tripped),
+        .ir_tripped(ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
         .dtheta(dtheta)
@@ -106,7 +106,7 @@ module top_level #(
         .tvalid(hub75_data_valid),
         .tready(hub75_ready),
         .tlast(hub75_last),
-        .address_data(dtheta),
+        .address_data(col_num1),
         .rgb0(hub75_rgb0),
         .rgb1(hub75_rgb1),
         .led_latch(hub75_latch),
