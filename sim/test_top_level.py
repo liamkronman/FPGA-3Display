@@ -47,6 +47,7 @@ def top_level_runner():
     #sources += [proj_path / "hdl" / "clk_wiz.v"]
     sources += [proj_path / "hdl" / "detect_to_theta.sv"]
     sources += [proj_path / "hdl" / "debouncer.sv"]
+    sources += [proj_path / "hdl" / "rfb_to_hub75.sv"]
 
     build_test_args = ["-Wall"]
     parameters = {
