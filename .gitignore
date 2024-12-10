@@ -8,3 +8,4 @@ _history/
 *.out
 */*.out
 a.out
+.DS_Store
