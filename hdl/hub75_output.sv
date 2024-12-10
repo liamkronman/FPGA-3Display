@@ -42,7 +42,7 @@ module hub75_output #(
    assign led_clk = clk_in & clk_msk; //control the hub75 clk input with the clk_msk  
 
    assign tready = state == 0;
-    assign tlast = period_counter == PERIOD * (pwm_counter + 1) - 1 && pwm_counter == 2
+    assign tlast = period_counter == PERIOD * (pwm_counter + 1) - 1 && pwm_counter == 2;
     
 
    initial begin 

@@ -68,7 +68,7 @@ module rot_frame_buffer_to_hub75
                 column0 <= input_cols[0];
                 column1 <= input_cols[1];
 
-                if(hub75_ready) begin
+                if(hub75_last) begin
                     state <= 1;
                 end
 
@@ -78,7 +78,11 @@ module rot_frame_buffer_to_hub75
                 columns[1] <= 0;
                 col_num <= radii[1];
                 data_valid <= 1;
-                state <= 2;
+                
+
+                if(hub75_last) begin
+                    state <= 2;
+                end
 
 
             end
