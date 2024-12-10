@@ -38,7 +38,7 @@ module top_level #(
     logic sys_rst;
 
     always_comb begin
-        sysclk = clk_24mhz;
+        sysclk = clk_12mhz;
     end
 
     //assign sysclk = clk_12mhz;

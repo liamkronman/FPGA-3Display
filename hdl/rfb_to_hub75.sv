@@ -34,7 +34,7 @@ module rot_frame_buffer_to_hub75
     logic [NUM_ROWS-1:0][RGB_RES-1:0] column1;
 
     logic [$clog2(SCAN_RATE)-1:0] current_col_num;
-    logic [NUM_ROWS-1:0][RGB_RES-1:0]  current_column;
+    logic [NUM_ROWS-1:0][RGB_RES-1:0]  zero_column;
 
     logic [2:0] theta_top_bits;
 
@@ -44,6 +44,7 @@ module rot_frame_buffer_to_hub75
     always_comb begin
 
         for(int i = 0; i<64; i++) begin
+            zero_column[i] = {RGB_RES{1'b0}};
             if (rfb_cols_input[0][i]) begin 
                 // input_cols[0][i] = {RGB_RES{1'b1}};
                 //takes top 3 bits of theta
@@ -51,6 +52,7 @@ module rot_frame_buffer_to_hub75
             end
             else begin
                 input_cols[0][i] = {RGB_RES{1'b0}};
+                
             end
 
             if (rfb_cols_input[1][i]) begin
@@ -84,9 +86,9 @@ module rot_frame_buffer_to_hub75
 
             end
             else if (state == 1) begin
-                columns[0] <= column0;
-                columns[1] <= 0;
-                col_num <= radii[1];
+                columns[0] <= zero_column;
+                columns[1] <= column0;
+                col_num <= radii[0];
                 data_valid <= 1;
                 
 
@@ -98,9 +100,9 @@ module rot_frame_buffer_to_hub75
             end
 
             else if (state == 2) begin
-                columns[0] <=0;
-                columns[1] <= column1;
-                col_num <= radii[0];
+                columns[0] <=column1;
+                columns[1] <= zero_column;
+                col_num <= radii[1];
                 state <= 0;
 
 
