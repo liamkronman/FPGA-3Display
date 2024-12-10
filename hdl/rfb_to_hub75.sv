@@ -1,4 +1,4 @@
-module rfb_to_hub75
+module rot_frame_buffer_to_hub75
 #( parameter ROTATIONAL_RES = 1024,
   parameter SCAN_RATE = 32,
   parameter DISPLAY_HEIGHT = 64,

@@ -35,9 +35,8 @@ module frame_manager #(
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num1;
     logic [$clog2(SCAN_RATE)-1:0] intermediate_col_num2;
 
-    logic [1:0][$clog2(SCAN_RATE)-1:0] rfb_radii;
-    logic [$clog2(SCAN_RATE)-1:0] rfb_radius;
-    assign rfb_radius = rfb_radii[0];
+    logic [$clog2(SCAN_RATE)-1:0] rfb_col_num;
+
     logic rfb_busy; 
 
     col_calc cc (
@@ -50,17 +49,8 @@ module frame_manager #(
         
         // col_num1 = col_index;
         col_num2 = col_index+SCAN_RATE;
-        
+        intermediate_col_num1 = (mode == 2'b10)  ? rfb_col_num :  col_index_intermediate; //if in cube mode
 
-        if(mode == 2'b10 ) begin //if in square mode
-            intermediate_col_num1 = rfb_radius;
-
-
-        end
-        else begin
-            intermediate_col_num1 = col_index_intermediate;
-
-        end
         intermediate_col_num2 = intermediate_col_num1+SCAN_RATE;
 
         
@@ -114,6 +104,19 @@ module frame_manager #(
         .columns(rfb_cols)
 
     );
+
+    rot_frame_buffer_to_hub75 rfb_to_hub75 (
+        .rst_in(rst_in),
+        .clk_in(clk_in),
+        .hub75_ready(hub75_ready),
+        .radii_input(rfb_radii),
+        .rfb_cols_input(rfb_cols),
+        .data_valid(rfb_data_valid)
+        .col_num(),
+        .columns(cube_cols),
+
+
+    )
 
 
 
