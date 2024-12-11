@@ -40,9 +40,9 @@ module rot_frame_buffer_to_hub75
 
     assign theta_top_bits = theta[$clog2(ROTATIONAL_RES)-1: $clog2(ROTATIONAL_RES)-3];
 
-    typedef enum { IDLE, WRITING_COLUMN0, WRITING_COLUMN1 } buffer_state;
+    typedef enum { IDLE, WRITING_COLUMN0, WRITING_COLUMN1 } rfb_to_hub_state;
   
-    buffer_state state;
+    rfb_to_hub_state state;
     
 
     always_comb begin //TAKE INPUT IN FROM RFB AND MAKE COMPATIBLE WITH 
@@ -106,7 +106,7 @@ module rot_frame_buffer_to_hub75
                 columns[0] <= column1;
                 columns[1] <= zero_column;
                 col_num <= 31 -  radii[1];
-                state <= 0;
+                state <= IDLE;
 
 
             end
