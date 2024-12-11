@@ -16,7 +16,7 @@ class Display:
         # print(bits)
         for i in range(64):
             if bits[i]:
-                z.append(63-i)
+                z.append(i)
         return z
 
     def plot_cartesian(self, x, y, z):
@@ -59,12 +59,17 @@ class Display:
 
         # plots a cylinder with radius 32 and height 64
         if show_cylinder:
+
+
             z = np.linspace(0, 64, 100)
             theta = np.linspace(0, 2*np.pi, 100)
             theta, z = np.meshgrid(theta, z)
             x = 32 * np.cos(theta) + 32
             y = 32 * np.sin(theta) + 32
             self.ax.plot_surface(x, y, z, alpha=0.2)
+
+            # Also plots an axis through x, y = 32
+            self.ax.plot([32, 32], [32, 32], [0, 64], color='black')
 
             # Creates a legend, red for cylindrical, blue for cartesian
             self.ax.legend(['Cartesian', 'Cylindrical'])
