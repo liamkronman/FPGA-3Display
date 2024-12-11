@@ -6,7 +6,7 @@ module hub75_output #(
     parameter NUM_ROWS=64,
     parameter SCAN_RATE=32,
     parameter THETA_RES=8,
-    parameter PERIOD=1000, //set to be a function of theta in the future
+    parameter PERIOD=100, //set to be a function of theta in the future
     parameter RGB_RES=9
 )
  (
@@ -119,7 +119,7 @@ module hub75_output #(
         led_latch <= 0;
 
         period_counter <= period_counter+ 1;
-        if(period_counter == PERIOD * (pwm_counter + 1) - 1 ) begin //using BCM method
+        if(period_counter == PERIOD ** (pwm_counter + 1) - 1 ) begin //using BCM method
             period_counter <= 0;
             if(pwm_counter == 2) begin
                 state <= IDLE;
