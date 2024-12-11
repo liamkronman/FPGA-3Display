@@ -186,14 +186,7 @@ module frame_manager #(
 
 
     logic old_hub75_ready;
-    // initial begin
-    //     col_index = 0;
-    //     col_index_intermediate = 0;
-    //     data_valid = 0;
-    //     columns = 0;
-    //     col_num1 = 0;
-    //     col_num2 = 0;
-    // end
+
 
     always_ff @(posedge clk_in) begin
         if (rst_in) begin // reset or theta has changed
