@@ -39,6 +39,8 @@ module rot_frame_buffer_to_hub75
     logic [2:0] theta_top_bits;
 
     assign theta_top_bits = theta[$clog2(ROTATIONAL_RES)-1: $clog2(ROTATIONAL_RES)-3];
+
+    data_state 
     
 
     always_comb begin

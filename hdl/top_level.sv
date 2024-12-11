@@ -112,14 +112,9 @@ module top_level #(
         .led_latch(hub75_latch),
         .led_output_enable(hub75_OE),
         .hub75_address(hub75_addr),
-        
         .led_clk(hub75_clk)
     );
-    // always_ff @(posedge sysclk) begin  
-    //     if(hub75_ready == 1) begin
-    //         hub75_addr <= hub75_addr + 1;
-    //     end
-    // end
+    
 endmodule
 
 `default_nettype none
