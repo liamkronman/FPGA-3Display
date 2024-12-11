@@ -14,7 +14,7 @@ TODO:
 
 */
 
-module bouncy_ball
+module draw_ball
 #( parameter ROTATIONAL_RES = 1024,
   parameter BALL_RAM_DEPTH = 389,
   parameter DISPLAY_RADIUS = 32,
@@ -25,22 +25,41 @@ module bouncy_ball
     input wire clk_in,
 
     input wire ball_frame,
-    input wire [$clog2(ROTATIONAL_RES)-1:0] theta_read, // Dual purpose, used for addressing reads and writes
+    output logic busy,
+    // input wire [$clog2(ROTATIONAL_RES)-1:0] theta_read, // Dual purpose, used for addressing reads and writes
 
-    output logic [1:0][DISPLAY_HEIGHT*DATA_SIZE-1:0] columns,
-    output logic [1:0][$clog2(DISPLAY_RADIUS)-1:0] radii
-    
+    // output logic [1:0][DISPLAY_HEIGHT*DATA_SIZE-1:0] columns,
+    // output logic [1:0][$clog2(DISPLAY_RADIUS)-1:0] radii,
+
+            // .flush(flush),
+    //     .new_data(write_frame_buffer),
+    //     .theta_write(draw_theta),
+    //     .radius(draw_radius),
+    //     .z(draw_z),
+
+    output logic flush,
+    output logic write_frame_buffer,
+    output logic [$clog2(ROTATIONAL_RES)-1:0] draw_theta,
+    output logic [4:0] draw_radius,
+    output logic [5:0] draw_z,
+
+    input wire [5:0] ball_x, //Origin of the ball
+    input wire [5:0] ball_y,
+    input wire [5:0] ball_z,
+
+    input wire buffer_busy
+
 );
 
     logic [$clog2(BALL_RAM_DEPTH)-1:0] ball_addr;
 
-    logic [5:0] ball_x; //Origin of the ball
-    logic [5:0] ball_y;
-    logic [5:0] ball_z;
+    // logic [5:0] ball_x; //Origin of the ball
+    // logic [5:0] ball_y;
+    // logic [5:0] ball_z;
 
-    assign ball_x = 0;
-    assign ball_y = 32;
-    assign ball_z = 32;
+    // assign ball_x = 8;
+    // assign ball_y = 20;
+    // assign ball_z = 32;
 
     logic [5:0] ball_offset_x;
     logic [5:0] ball_offset_y;
@@ -54,9 +73,9 @@ module bouncy_ball
     logic [6:0] extended_ball_y;
     logic [6:0] extended_ball_z;
 
-    logic flush;
-    logic buffer_busy;
-    logic busy;
+    // logic flush;
+    // logic buffer_busy;
+    // logic busy;
 
 
     logic [$clog2(5):0] draw_timer;
@@ -64,12 +83,12 @@ module bouncy_ball
 
 
     logic exceeded;
-    logic [4:0] draw_radius;
-    logic [$clog2(ROTATIONAL_RES)-1:0] draw_theta;
-    logic [5:0] draw_z;        // Different from draw_ball_z, this is the z 
-                               // value in cylindrical coordinates
+    // logic [4:0] draw_radius;
+    // logic [$clog2(ROTATIONAL_RES)-1:0] draw_theta;
+    // logic [5:0] draw_z;        // Different from draw_ball_z, this is the z 
+    //                            // value in cylindrical coordinates
 
-    logic write_frame_buffer;
+    // logic write_frame_buffer;
 
 
     xilinx_single_port_ram_read_first #(
@@ -89,24 +108,24 @@ module bouncy_ball
         .douta({ball_offset_x, ball_offset_y, ball_offset_z})      // RAM output data, width determined from RAM_WIDTH
     );
 
-    rot_frame_buffer #(
-      .ROTATIONAL_RES(ROTATIONAL_RES)
-    ) rfb (
-        .rst_in(rst_in),
-        .clk_in(clk_in),
-        .flush(flush),
-        .new_data(write_frame_buffer),
-        .theta_write(draw_theta),
-        .radius(draw_radius),
-        .z(draw_z),
-        .theta_read(theta_read),
-        .busy(buffer_busy),
-        .columns(columns),
-        .radii(radii)
-    );
+    // rot_frame_buffer #(
+    //   .ROTATIONAL_RES(ROTATIONAL_RES)
+    // ) rfb (
+    //     .rst_in(rst_in),
+    //     .clk_in(clk_in),
+    //     .flush(flush),
+    //     .new_data(write_frame_buffer),
+    //     .theta_write(draw_theta),
+    //     .radius(draw_radius),
+    //     .z(draw_z),
+    //     .theta_read(theta_read),
+    //     .busy(buffer_busy),
+    //     .columns(columns),
+    //     .radii(radii)
+    // );
 
     cartesian_to_cylindrical #(
-        .ROTATIONAL_RES(ROTATIONAL_RES)
+        .ROTATIONAL_RESOLUTION(ROTATIONAL_RES)
     ) ctc (
         .rst_in(rst_in),
         .clk_in(clk_in),
@@ -128,19 +147,25 @@ module bouncy_ball
     assign busy = (sim_state != IDLE);
     always_comb begin
         
-        extended_ball_x = {1'b0, ball_x} + {ball_offset_x[5] ? 1'b1 : 1'b0, ball_offset_x};
-        extended_ball_y = {1'b0, ball_y} + {ball_offset_y[5] ? 1'b1 : 1'b0, ball_offset_y};
-        extended_ball_z = {1'b0, ball_z} + {ball_offset_z[5] ? 1'b1 : 1'b0, ball_offset_z};
+        // extended_ball_x = {1'b0, ball_x} + {ball_offset_x[5] ? 1'b1 : 1'b0, ball_offset_x};
+        // extended_ball_y = {1'b0, ball_y} + {ball_offset_y[5] ? 1'b1 : 1'b0, ball_offset_y};
+        // extended_ball_z = {1'b0, ball_z} + {ball_offset_z[5] ? 1'b1 : 1'b0, ball_offset_z};
         
-        if (extended_ball_x < 64 && extended_ball_y < 64 && extended_ball_z < 64) begin
-            draw_ball_x = extended_ball_x;
-            draw_ball_y = extended_ball_y;
-            draw_ball_z = extended_ball_z;
-        end else begin
-            draw_ball_x = 0; // This will put the ball off screen, and make the
-            draw_ball_y = 0; // radius greater than 31, making it invisible with
-            draw_ball_z = 0; // writing logic in DRAW state
-        end
+        // if (extended_ball_x < 64 && extended_ball_y < 64 && extended_ball_z < 64) begin
+        //     draw_ball_x = extended_ball_x;
+        //     draw_ball_y = extended_ball_y;
+        //     draw_ball_z = extended_ball_z;
+        // end else begin
+        //     draw_ball_x = 0; // This will put the ball off screen, and make the
+        //     draw_ball_y = 0; // radius greater than 31, making it invisible with
+        //     draw_ball_z = 0; // writing logic in DRAW state
+
+
+        // end
+
+        draw_ball_x = ball_x + ball_offset_x;
+        draw_ball_y = ball_y + ball_offset_y;
+        draw_ball_z = ball_z + ball_offset_z;
 
 
     end
@@ -165,7 +190,7 @@ module bouncy_ball
                 end
                 FLUSH: begin
                     flush <= 1'b0;
-                    if (!buffer_busy) begin
+                    if (!buffer_busy && flush == 0) begin // Wait one clock cycle for buffer to flush
                         sim_state <= DRAW;
 
                         ball_addr <= 0;
@@ -187,7 +212,7 @@ module bouncy_ball
                         ball_addr <= ball_addr + 1;
                         draw_timer <= 0;
 
-                        if (ball_addr == BALL_RAM_DEPTH-2) begin
+                        if (ball_addr == BALL_RAM_DEPTH-1) begin
                             // sim_state <= IDLE;
                             sim_state <= WAIT;
                             wait_timer <= 4; // Wait for 4 cycles before going back to IDLE

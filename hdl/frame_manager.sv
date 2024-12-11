@@ -85,6 +85,67 @@ module frame_manager #(
         .columns(cube_cols)
     );*/
 
+    logic ball_frame;
+    logic ball_frame_busy;
+
+    logic [5:0] ball_x;
+    logic [5:0] ball_y;
+    logic [5:0] ball_z;
+
+
+    ball_simulation bs (
+        .rst_in(rst_in),
+        .clk_in(clk_in),
+        .new_frame(dtheta==0),
+        .ball_frame_busy(ball_frame_busy),
+        .ball_frame(ball_frame),
+        .box_frame_busy(0),
+        .box_frame(0),
+        .ball_x(ball_x),
+        .ball_y(ball_y),
+        .ball_z(ball_z)
+    );
+
+
+    logic flush;
+    logic write_frame_buffer;
+    logic [$clog2(ROTATIONAL_RES)-1:0] draw_theta;
+    logic [5:0] draw_radius;
+    logic [5:0] draw_z;
+
+    draw_ball db (
+
+    // input wire rst_in,
+    // input wire clk_in,
+
+    // input wire ball_frame,
+
+    // output logic flush,
+    // output logic write_frame_buffer,
+    // output logic [$clog2(ROTATIONAL_RES)-1:0] draw_theta,
+    // output logic [4:0] draw_radius,
+    // output logic [5:0] draw_z,
+
+    // input wire buffer_busy
+        .rst_in(rst_in),
+        .clk_in(clk_in),
+        .ball_frame(ball_frame),
+        .busy(ball_frame_busy),
+        .flush(flush),
+        .write_frame_buffer(write_frame_buffer),
+        
+        .ball_x(ball_x), //Origin of the ball
+        .ball_y(ball_y),
+        .ball_z(ball_z),
+
+        .draw_theta(draw_theta),
+        .draw_radius(draw_radius),
+        .draw_z(draw_z)
+
+    );
+
+
+
     boids_frame bf (
         .dtheta(dtheta),
         .column_index1(intermediate_col_num1),
@@ -95,13 +156,13 @@ module frame_manager #(
     rot_frame_buffer rfb (
         .rst_in(rst_in),
         .clk_in(clk_in),
-        .flush(0),
-        .new_data(0),
-        .radii(rfb_radii),
-        .radius(0),
-        .z(0),
-        .theta_write(0),
+        .flush(flush),
+        .new_data(write_frame_buffer),
+        .theta_write(draw_theta),
+        .radius(draw_radius),
+        .z(draw_z),
         .theta_read(dtheta),
+        .radii(rfb_radii),
         .busy(rfb_busy),
         .columns(rfb_cols)
 

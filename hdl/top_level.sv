@@ -76,7 +76,7 @@ module top_level #(
     logic hub75_last;
 
     detect_to_theta dt (
-        .ir_tripped(ir_tripped),
+        .ir_tripped(debounced_ir_tripped),
         .clk_in(sysclk),
         .rst_in(sys_rst),
         .dtheta(dtheta)
