@@ -28,7 +28,6 @@ module rot_frame_buffer_to_hub75
 
     logic [1:0][$clog2(SCAN_RATE)-1:0] radii;
 
-    logic [1:0] state; 
     logic [1:0][NUM_ROWS-1:0][RGB_RES-1:0] input_cols;
     logic [NUM_ROWS-1:0][RGB_RES-1:0] column0;
     logic [NUM_ROWS-1:0][RGB_RES-1:0] column1;
