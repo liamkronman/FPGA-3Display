@@ -57,8 +57,6 @@ module hub75_output #(
             rgb1[0] = columns[1][pixel_counter][0];
             rgb1[1] = columns[1][pixel_counter][3];
             rgb1[2] = columns[1][pixel_counter][6];
-
-
         end
         else if(pwm_counter == 1) begin
             rgb0[0] = columns[0][pixel_counter][1] ;

@@ -40,17 +40,18 @@ module rot_frame_buffer_to_hub75
 
     assign theta_top_bits = theta[$clog2(ROTATIONAL_RES)-1: $clog2(ROTATIONAL_RES)-3];
 
-    data_state 
+    typedef enum { IDLE, WRITING_COLUMN0, WRITING_COLUMN1 } buffer_state;
+  
+    buffer_state state;
     
 
-    always_comb begin
+    always_comb begin //TAKE INPUT IN FROM RFB AND MAKE COMPATIBLE WITH 
 
         for(int i = 0; i<64; i++) begin
             zero_column[i] = {RGB_RES{1'b0}};
             if (rfb_cols_input[0][i]) begin 
                 input_cols[0][i] = {RGB_RES{1'b1}};
-                //takes top 3 bits of theta
-                //input_cols[0][i] = { 1'b0, theta };
+
             end
             else begin
                 input_cols[0][i] = {RGB_RES{1'b0}};
@@ -71,23 +72,23 @@ module rot_frame_buffer_to_hub75
     always_ff @(posedge clk_in) begin
 
         if(rst_in) begin
-            state <= 0;
+            state <= IDLE;
             col_num <= 0;
             columns <= 0;
         end
         else begin
 
-            if(state == 0) begin
+            if(state == IDLE) begin
                 radii <= radii_input;
                 column0 <= input_cols[0];
                 column1 <= input_cols[1];
 
                 if(hub75_last) begin
-                    state <= 1;
+                    state <= WRITING_COLUMN0;
                 end
 
             end
-            else if (state == 1) begin
+            else if (state == WRITING_COLUMN0) begin
                 columns[0] <= zero_column;
                 columns[1] <= column0;
                 col_num <= radii[0];
@@ -95,13 +96,13 @@ module rot_frame_buffer_to_hub75
                 
 
                 if(hub75_last) begin
-                    state <= 2;
+                    state <= WRITING_COLUMN1;
                 end
 
 
             end
 
-            else if (state == 2) begin
+            else if (state == WRITING_COLUMN1) begin
                 columns[0] <= column1;
                 columns[1] <= zero_column;
                 col_num <= 31 -  radii[1];
