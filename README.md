@@ -15,3 +15,6 @@ openFPGALoader -b cmoda7_35t obj/final.bit
 ```
 To flash instead of normal programming (for power through slip ring during rotation):
 `openFPGALoader -b cmoda7_35t -f obj/final.bit`
+
+## DEMO
+[**Link.**](https://www.youtube.com/watch?v=dmettyEq79U)
